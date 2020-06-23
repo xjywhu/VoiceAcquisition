@@ -1,0 +1,63 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "任务发布"
+			}
+		}
+	    ,{
+            "path" : "pages/Info/Info",
+            "style" : {
+				"navigationBarTitleText": "个人中心"
+			}
+        }
+        ,{
+            "path" : "pages/Task/Task",
+            "style" : {
+				"navigationBarTitleText": "任务广场"
+			}
+        }
+    ],
+	
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+	    "color": "#7A7E83",
+	    "selectedColor": "#3cc51f",
+	    "borderStyle": "black",
+	    "backgroundColor": "#ffffff",
+	    "height": "70px",
+	    "fontSize": "10px",
+	    "iconWidth": "24px",
+	    "spacing": "3px",
+	    "list": [{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/icon/发布.png",
+			"selectedIconPath": "static/icon/发布.png",
+			"text": "任务发布"
+		}, {
+	        "pagePath": "pages/Task/Task",
+	        "iconPath": "static/icon/任务.png",
+	        "selectedIconPath": "static/icon/任务.png",
+	        "text": "任务广场"
+	    }, {
+	        "pagePath": "pages/Info/Info",
+	        "iconPath": "static/icon/个人中心.png",
+	        "selectedIconPath": "static/icon/个人中心.png",
+	        "text": "个人中心"
+	    }]
+	    /*"midButton": {
+	        "width": "80px",
+	        "height": "50px",
+	        "text": "文字",
+	        "iconPath": "static/image/midButton_iconPath.png",
+	        "iconWidth": "24px",
+	        "backgroundImage": "static/image/midButton_backgroundImage.png"
+	    }*/
+	}
+}

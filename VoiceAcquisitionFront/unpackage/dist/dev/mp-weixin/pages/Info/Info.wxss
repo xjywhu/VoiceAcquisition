@@ -1,0 +1,130 @@
+
+Page {
+	font-size: 14px;
+}
+.top {
+	width: 100%;
+	height: 180px;
+	background: #23EBB9;
+	padding-top: 15px;
+	position: relative;
+}
+.center {
+	width: 95%;
+	height: 150px;
+	background: white;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	margin: 0 auto;
+	border-radius: 5px;
+}
+.center_top {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	        flex-direction: row;
+	width: 80%;
+	height: 80px;
+	margin: 0 auto;
+	margin-top: 20rpx;
+	border-bottom: 1px solid #EEEEEE;
+}
+.center_img {
+	width: 66px;
+	height: 66px;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.center_img image {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+}
+.center_img .user_head {
+	width: 100%;
+	height: 100%;
+}
+.center_info {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	        flex-direction: column;
+	margin-top: 10rpx;
+	margin-left: 30px;
+}
+.center_name {
+	font-size: 20px;
+}
+.center_phone {
+	color: #BEBEBE;
+}
+.center_down {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	        flex-direction: row;
+	width: 80%;
+	height: 35px;
+	margin: 0 auto;
+	margin-top: 20rpx;
+}
+.center_rank {
+	width: 50%;
+	height: 35px;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	        flex-direction: row;
+}
+.rank_text {
+	height: 35px;
+	line-height: 35px;
+	margin-left: 10rpx;
+	color: #AAAAAA;
+}
+.center_rank image {
+	width: 35px;
+	height: 35px;
+}
+.center_score {
+	width: 50%;
+	height: 35px;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: horizontal;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: row;
+	        flex-direction: row;
+}
+.center_score image {
+	width: 35px;
+	height: 35px;
+}
+.gif-wave {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	z-index: 99;
+	mix-blend-mode: screen;
+	height: 100rpx;
+}
+

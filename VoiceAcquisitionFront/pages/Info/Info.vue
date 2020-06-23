@@ -1,0 +1,203 @@
+<template>
+	<view>
+		<view class="top">
+			<view class="center">
+				<view class="center_top">
+					<view class="center_img" @tap="toBaseInfo">
+						<!-- 头像 -->
+						<image class="user_head" :src="avatarUrl">头像</image>
+						<!-- <image src="../../static/image/头像.jpg"></image> -->
+						<!-- <open-data type="userAvatarUrl" class="user_head"></open-data> -->
+					</view>
+					<view class="center_info" @tap="toBaseInfo">
+						<view class="center_name">{{trueName}}</view>
+						<!-- <view class="center_phone">phone:{{phone}}</view> -->
+						<view class="center_phone">基本信息</view>
+						<text class="nickName">昵称:{{nickNames}}</text>
+						<text class="sex">性别:{{sex}}</text>
+						<text class="native">籍贯:{{native}}</text>
+					</view>
+				</view>
+				<view class="center_down">
+					<view class="center_rank" @tap="toNone">
+						<image class="rank_icon" src="../../static/icon/排名.png"></image>
+						<text class="rank_text">我的排名</text>
+					</view>
+					<view class="center_score" @tap="toNone">
+						<image class="rank_icon" src="../../static/icon/积分.png"></image>
+						<text class="rank_text">我的积分</text>
+					</view>
+				</view>
+			</view>
+			<image src='https://6661-fatdown-wxapp-sg2p1-1300398887.tcb.qcloud.la/wave.gif?sign=045605c672f482a8c3d428abed669aa7&t=1570674356' mode='scaleToFill' class='gif-wave'></image>
+		</view>
+		<uni-list>
+		    <uni-list-item title="我的任务" thumb="../../static/icon/我的任务.png"></uni-list-item>
+		    <uni-list-item title="充值积分" thumb="../../static/icon/充值.png"></uni-list-item>
+		    <uni-list-item title="积分提现" thumb="../../static/icon/提现.png"></uni-list-item>
+		</uni-list>
+	</view>
+	
+		
+</template>
+
+<script>
+	import uniListItem from '@/components/uni-list-item/uni-list-item.vue'
+	export default {
+		components:{
+			uniListItem
+		},
+		data() {
+			return {
+				nickNames: '匿名用户',
+				avatarUrl: ' ',//默认头像路径
+				sex: '',
+				age: '',
+				native: '',
+				show: '',
+				hidden: ''
+			}
+		},
+		methods: {
+			
+		},
+		onLoad: function(option) {
+			let that = this;
+			uni.login({
+				provider: 'weixin',
+				success: function(loginRes) {
+					//console.log(loginRes);
+					// 获取用户信息
+					uni.getUserInfo({
+						provider: 'weixin',
+						success: function(infoRes) {
+							console.log(infoRes);
+							that._data.nickNames = infoRes.userInfo.nickName;
+							that._data.avatarUrl = infoRes.userInfo.avatarUrl;
+							that._data.sex = infoRes.userInfo.sex;
+							that._data.native = infoRes.userInfo.province.toString();
+						}
+					});
+				}
+			});
+		 
+		}
+	}
+</script>
+
+<style>
+	Page {
+		font-size: 14px;
+	}
+ 
+	.top {
+		width: 100%;
+		height: 180px;
+		background: #23EBB9;
+		padding-top: 15px;
+		position: relative;
+	}
+ 
+	.center {
+		width: 95%;
+		height: 150px;
+		background: white;
+		display: flex;
+		flex-direction: column;
+		margin: 0 auto;
+		border-radius: 5px;
+	}
+ 
+	.center_top {
+		display: flex;
+		flex-direction: row;
+		width: 80%;
+		height: 80px;
+		margin: 0 auto;
+		margin-top: 20rpx;
+		border-bottom: 1px solid #EEEEEE;
+	}
+ 
+	.center_img {
+		width: 66px;
+		height: 66px;
+		border-radius: 50%;
+		overflow: hidden;
+	}
+ 
+	.center_img image {
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+	}
+ 
+	.center_img .user_head {
+		width: 100%;
+		height: 100%;
+	}
+ 
+	.center_info {
+		display: flex;
+		flex-direction: column;
+		margin-top: 10rpx;
+		margin-left: 30px;
+	}
+ 
+	.center_name {
+		font-size: 20px;
+	}
+ 
+	.center_phone {
+		color: #BEBEBE;
+	}
+ 
+	.center_down {
+		display: flex;
+		flex-direction: row;
+		width: 80%;
+		height: 35px;
+		margin: 0 auto;
+		margin-top: 20rpx;
+	}
+ 
+	.center_rank {
+		width: 50%;
+		height: 35px;
+		display: flex;
+		flex-direction: row;
+	}
+ 
+	.rank_text {
+		height: 35px;
+		line-height: 35px;
+		margin-left: 10rpx;
+		color: #AAAAAA;
+	}
+ 
+	.center_rank image {
+		width: 35px;
+		height: 35px;
+	}
+ 
+	.center_score {
+		width: 50%;
+		height: 35px;
+		display: flex;
+		flex-direction: row;
+	}
+ 
+	.center_score image {
+		width: 35px;
+		height: 35px;
+	}
+ 
+	.gif-wave {
+		position: absolute;
+		width: 100%;
+		bottom: 0;
+		left: 0;
+		z-index: 99;
+		mix-blend-mode: screen;
+		height: 100rpx;
+	}
+</style>
