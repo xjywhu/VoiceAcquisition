@@ -32,7 +32,15 @@
 		<!-- 底部 -->
 		<view v-if="note" class="uni-card__footer">
 			<slot name="footer">
-				<text class="uni-card__footer-text">{{ note }}</text>
+				<!-- <text class="uni-card__footer-text">{{ note }}</text> -->
+				<div style="display:flex;margin-right:20px">
+				<view v-if="note" class="uni-card__footer-text">
+					<uni-tag :text="note"  type="warning" :circle="false" size="small"></uni-tag>
+				</view>
+				<view v-if="note" class="uni-card__footer-text">
+				<uni-tag :text="threshold"  type="success" :circle="false" size="small"></uni-tag>
+				</view>
+				</div>
 			</slot>
 		</view>
 	</view>
@@ -51,6 +59,10 @@
 				default: ''
 			}, // 扩展信息
 			note: {
+				type: String,
+				default: ''
+			}, // Tips
+			threshold: {
 				type: String,
 				default: ''
 			}, // Tips
@@ -254,7 +266,7 @@
 
 	.uni-card__footer {
 		justify-content: space-between;
-		padding: 10px;
+		padding: 5px;
 		border-top-color: $uni-border-color;
 		border-top-style: solid;
 		border-top-width: 1px;
@@ -263,6 +275,8 @@
 	.uni-card__footer-text {
 		color: $uni-text-color-grey;
 		font-size: $uni-font-size-base;
+		padding: 5px;
+		width: 60px;
 	}
 
 	.uni-card--shadow {

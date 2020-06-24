@@ -1,78 +1,81 @@
 <template>
 	
 	<view>
-	<!-- 基本用法 -->
-	<uni-search-bar @confirm="search" @input="input" ></uni-search-bar>
-	
-	<!-- 自定义Placeholder -->
-	<uni-search-bar placeholder="自定placeholder" @confirm="search"></uni-search-bar>
-	
-	<!-- 设置圆角 -->
-	<uni-search-bar :radius="100" @confirm="search"></uni-search-bar>	
-<!-- 一般用法 -->
-<uni-card title="标题文字" thumbnail="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" extra="额外信息" note="Tips">
-    内容主体，可自定义内容及样式
-</uni-card>
-<!-- 内容通栏 -->
-<uni-card is-full="true" title="DCloud" thumbnail="https://img-cdn-qiniu.dcloud.net.cn/new-page/uni.png" extra="2018.12.12" >
-    <image src="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/shuijiao.jpg" style="width: 100%;"></image>
-</uni-card>
-
-<!-- 图文卡片模式 -->
-<uni-card
-    title="标题文字"
-    mode="style"
-    :is-shadow="true"
-    thumbnail="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/cbd.jpg"
-    extra="Dcloud 2019-05-20 12:32:19"
-    note="Tips"
->
-        那是一个秋意盎然、金风送爽的日子，我和父母一起来到了位于上师大旁的康健园。一踏进公园，一股浓郁的桂香扑鼻而来，泌人心脾,让我心旷神怡，只见一朵朵开得正烈的金色桂花，迎风而立，仿佛在向我招手。我们追着这桂香，走进了清幽的公园。
-</uni-card>
-
-<!-- 标题卡片模式 -->
-<uni-card 
-    title="Dcloud" 
-    mode="title" 
-    :is-shadow="true" 
-    thumbnail="https://img-cdn-qiniu.dcloud.net.cn/uniapp/images/muwu.jpg" 
-    extra="技术没有上限" 
-    note="Tips"
->
-    那是一个秋意盎然、金风送爽的日子,我和父母一起来到了位于上师大旁的康健园.一踏进公园,一股浓郁的桂香扑鼻而来,泌人心脾,让我心旷神怡,只见一朵朵开得正烈的金色桂花,迎风而立,仿佛在向我招手.我们追着这桂香,走进了清幽的公园.
-</uni-card>
-
-<!-- 自定义底部按钮 -->
-<uni-card title="Dcloud" note="true">
-    默认内容
-    <template v-slot:footer>
-        <view class="footer-box">
-            <view>喜欢</view>
-            <view>评论</view>
-            <view>分享</view>
-        </view>
-    </template>
-</uni-card>
-</view>
+		<!-- 基本用法 -->
+		<uni-search-bar @confirm="search" @input="input" ></uni-search-bar>
+<!-- 		<view class="test">
+			<div style="display:flex;">
+			<uni-tag text="note"  type="success" :circle="false" size="small"></uni-tag>
+			<uni-tag text="note"  type="warning" :circle="false" size="small"></uni-tag>
+			</div>
+		</view> -->
+<!-- 		<uni-tag text="标签"></uni-tag>
+		<uni-tag text="标签" type="error" :circle="true"></uni-tag>
+		<uni-tag text="标签" @click="bindClick"></uni-tag> -->
+		<!-- 标题卡片模式 -->
+		<view class="content">
+			<view class="uni-list">
+				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" @tap="openinfo" :data-newsid="item.tid">
+					<uni-card
+						:title= "item.title"
+						mode="title" 
+						:is-shadow="true" 
+						:thumbnail= "base_url+'images/cccccc'"
+						:extra="'发布者:'+item.releaser_wx_number"
+						:note="'金额:'+item.money"
+						:threshold="'阈值:'+item.threshold_value"
+					>
+					<!-- :thumbnail= "base_url+'images/'+item.releaser_wx_number" -->
+					{{item.description}}
+					</uni-card>
+				</view>
+			</view>
+		</view>	
+	</view>
 </template>
 
 <script>
 	//import uniCard from '@/components/uni-card/uni-card.vue';
 	import uniSearchBar from '@/components/uni-search-bar/uni-search-bar.vue';
+	//import uniTag from "@/components/uni-tag/uni-tag.vue";
+	var base_url = "http://127.0.0.1:8000/api/v1/";
 	export default {
 		//components: {uni-search-bar},
 		components: {uniSearchBar},
 		data() {
 			return {
-				
-			}
+				tasks : [],
+				base_url: "http://127.0.0.1:8000/api/v1/",
+			};
+		},
+		onLoad:function(){
+			uni.showLoading({
+				title:"加载中...."
+			})
+			uni.request({
+				url: base_url + 'tasks',
+				method: 'GET',
+				data: {},
+				success: res => {
+					console.log(res.data);
+					//console.log(res.data[0].description);
+					this.tasks = res.data;
+					uni.hideLoading();
+				},
+				fail: () => {},
+				complete: () => {}
+			});
 		},
 		methods: {
-			
-		}
+			openinfo(e) {
+				var newsid = e.currentTarget.dataset.newsid;
+				uni.navigateTo({
+					url: '../info/info?newsid='+newsid
+				});
+			}
+		},
 	}
 </script>
 
 <style>
-
 </style>
