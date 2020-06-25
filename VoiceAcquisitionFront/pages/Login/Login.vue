@@ -42,22 +42,32 @@
 									//console.log(res3)
 									// console.log(res3.data)
 									var openid = res3.data.openid
+									global.user_data.wx_number = openid
+									//console.log(global.user_data.wx_number)
+									console.log('openid:')
 									console.log(openid);
-									// getApp().globalData.nickName = res.detail.userInfo.nickName;
-									// getApp().globalData.avatarUrl = res.detail.userInfo.gender;
-									// if(getApp().globalData.gender == 1){
-									// 	getApp().globalData.sex = '男'
-									// }else if(getApp().globalData.gender == 2){
-									// 	getApp().globalData.sex = '女'
-									// }
-									// getApp().globalData.native = res.detail.userInfo.province.toString();
-									// getApp().globalData.wx_number = openid;
+									global.user_data.nickNames = res.detail.userInfo.nickName;
+									global.user_data.gender = res.detail.userInfo.gender;
+									if(global.user_data.gender == 1){
+										global.user_data.sex = '男';
+									}else if(global.user_data.gender == 2){
+										global.user_data.sex = '女';
+									}else{
+										global.user_data.sex = '未知';
+									}
+									global.user_data.native = res.detail.userInfo.province.toString();
+									global.user_data.wx_number = openid;
 									// uni.setStorageSync('wx_number',openid);
-									// console.log('登录成功，即将跳转界面...')
-									// global.user_data.wx_number = openid
-									// uni.navigateTo({
-									// 	url:'../Info/Info'
-									// });
+									global.isLogin = true;
+									console.log('登录成功，即将跳转界面...')
+									global.user_data.avatarUrl = res.detail.userInfo.avatarUrl;
+									// 存入数据库
+									var base_url = "http://127.0.0.1:8000/api/v1/";
+									
+									
+									
+									
+									uni.navigateBack();
 								}
 							});
 						}else{

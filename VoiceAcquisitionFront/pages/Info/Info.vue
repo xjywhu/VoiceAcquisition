@@ -63,49 +63,31 @@
 		methods: {
 			
 		},
+		onShow:function(){
+			let _self = this;
+			_self.wx_number = global.user_data.wx_number;
+			_self.nickNames = global.user_data.nickNames;
+			_self.avatarUrl = global.user_data.avatarUrl;
+			_self.sex = global.user_data.sex;
+			_self.age = global.user_data.age;
+			_self.gender = global.user_data.gender;
+			_self.native = global.user_data.native;
+			_self.show = global.user_data.show;
+			_self.hidden = global.user_data.hidden;
+		},
 		onLoad: function(option) {
-			let that = this;
-			uni.login({
-				provider: 'weixin',
-				success: function(loginRes) {
-					var res = global.isLogin;
-					if(!res){
-						console.log('未登录...');
-						uni.showModal({
-							title:'提醒',
-							content:'请登录',
-							success:function(){
-								uni.navigateTo({
-									url:'../Login/Login'
-								})
-							}
+			if(!global.isLogin){
+				console.log('未登录...');
+				uni.showModal({
+					title:'提醒',
+					content:'请登录',
+					success:function(){
+						uni.navigateTo({
+							url:'../Login/Login'
 						})
 					}
-					
-					//console.log(loginRes);
-					// 获取用户信息
-					// uni.getUserInfo({
-					// 	provider: 'weixin',
-					// 	success: function(infoRes) {
-					// 		console.log(infoRes);
-							
-					// 		that._data.nickNames = infoRes.userInfo.nickName;
-					// 		that._data.avatarUrl = infoRes.userInfo.avatarUrl;
-					// 		that._data.gender = infoRes.userInfo.gender;
-					// 		if(that._data.gender == 1){
-					// 			that._data.sex = '男'
-					// 		}else if(that._data.gender == 2){
-					// 			that._data.sex = '女'
-					// 		}
-					// 		that._data.native = infoRes.userInfo.province.toString();
-					// 		//that._data.wx_number = infoRes.userInfo
-					// 		//console.log(that._data.wx_number)
-					// 	}
-					// });
-					// // 此处将数据传入数据库
-					// base_url = 'http://127.0.0.1:8000/api/v1/';
-				}
-			});
+				})
+			}
 		}
 	}
 </script>
