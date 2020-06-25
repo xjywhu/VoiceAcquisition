@@ -1,0 +1,65 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1012131",
+      "name": "减",
+      "font_class": "wuuiconsuoxiao",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "1012132",
+      "name": "加",
+      "font_class": "wuuiconxiangjifangda",
+      "unicode": "e620",
+      "unicode_decimal": 58912
+    },
+    {
+      "icon_id": "4511969",
+      "name": "减少",
+      "font_class": "jianshao",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "4770738",
+      "name": "减少数字",
+      "font_class": "jianshaoshuzi",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "5334173",
+      "name": "加",
+      "font_class": "jia",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "6056167",
+      "name": "添加2",
+      "font_class": "tianjia",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    },
+    {
+      "icon_id": "9974752",
+      "name": "方框-加",
+      "font_class": "fangkuang-jia",
+      "unicode": "e70e",
+      "unicode_decimal": 59150
+    },
+    {
+      "icon_id": "9974753",
+      "name": "方框-减",
+      "font_class": "fangkuang-jian",
+      "unicode": "e70f",
+      "unicode_decimal": 59151
+    }
+  ]
+}
