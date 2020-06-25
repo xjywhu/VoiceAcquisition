@@ -18,7 +18,8 @@ class UserSerializer(serializers.ModelSerializer):
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['releaser_wx_number', 'title','money', 'threshold_value', 'description']
+        fields = ['releaser', 'title','money', 'threshold_value', 'description']
+        depth = 1
 
 class Task_ContextSerializer(serializers.ModelSerializer):
     class Meta:

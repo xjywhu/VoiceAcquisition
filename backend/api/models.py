@@ -35,7 +35,7 @@ class Task(models.Model):
     发布者，发布时间，任务名称，金额，阈值，任务描述
     '''
     tid = models.IntegerField(verbose_name='tid',primary_key=True,auto_created=True)
-    releaser_wx_number = models.ForeignKey(to='User', verbose_name='发布者', on_delete=models.CASCADE)
+    releaser = models.ForeignKey(to='User', verbose_name='发布者', on_delete=models.CASCADE)
     release_time = models.DateField(auto_now=True)
     title = models.CharField(max_length=50,verbose_name='任务名称')
     money = models.IntegerField(verbose_name='金额')
