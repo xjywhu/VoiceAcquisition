@@ -51,7 +51,7 @@
 			return {
 				wx_number: 'unknown',
 				nickNames: '匿名用户',
-				avatarUrl: ' ',//默认头像路径
+				avatarUrl: 'http://img2.imgtn.bdimg.com/it/u=2091711702,2468700162&fm=11&gp=0.jpg',//默认头像路径
 				sex: '',
 				age: '',
 				gender: 0,
@@ -68,33 +68,44 @@
 			uni.login({
 				provider: 'weixin',
 				success: function(loginRes) {
+					var res = global.isLogin;
+					if(!res){
+						console.log('未登录...');
+						uni.showModal({
+							title:'提醒',
+							content:'请登录',
+							success:function(){
+								uni.navigateTo({
+									url:'../Login/Login'
+								})
+							}
+						})
+					}
+					
 					//console.log(loginRes);
 					// 获取用户信息
-					uni.getUserInfo({
-						provider: 'weixin',
-						success: function(infoRes) {
-							console.log(infoRes);
+					// uni.getUserInfo({
+					// 	provider: 'weixin',
+					// 	success: function(infoRes) {
+					// 		console.log(infoRes);
 							
-							that._data.nickNames = infoRes.userInfo.nickName;
-							that._data.avatarUrl = infoRes.userInfo.avatarUrl;
-							that._data.gender = infoRes.userInfo.gender;
-							if(that._data.gender == 1){
-								that._data.sex = '男'
-							}else if(that._data.gender == 2){
-								that._data.sex = '女'
-							}
-							that._data.native = infoRes.userInfo.province.toString();
-							//that._data.wx_number = infoRes.userInfo.
-							//console.log(that._data.wx_number)
-						}
-					});
-					// 此处将数据传入数据库
-					base_url = 'http://127.0.0.1:8000/api/v1/';
-					
-					
+					// 		that._data.nickNames = infoRes.userInfo.nickName;
+					// 		that._data.avatarUrl = infoRes.userInfo.avatarUrl;
+					// 		that._data.gender = infoRes.userInfo.gender;
+					// 		if(that._data.gender == 1){
+					// 			that._data.sex = '男'
+					// 		}else if(that._data.gender == 2){
+					// 			that._data.sex = '女'
+					// 		}
+					// 		that._data.native = infoRes.userInfo.province.toString();
+					// 		//that._data.wx_number = infoRes.userInfo
+					// 		//console.log(that._data.wx_number)
+					// 	}
+					// });
+					// // 此处将数据传入数据库
+					// base_url = 'http://127.0.0.1:8000/api/v1/';
 				}
 			});
-		 
 		}
 	}
 </script>

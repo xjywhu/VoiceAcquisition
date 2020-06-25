@@ -6,7 +6,10 @@ from rest_framework.response import Response
 from .serializers import *
 from .models import *
 from django.http import HttpResponse
+import requests
 
+app_id = "wxfbbdf46e1f2546ef"
+app_secret = "f71231c7013b49a9bdb1f60136dcbba5"
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
@@ -199,3 +202,19 @@ class ImageView(APIView):
 
     def post(self, request, *args, **kwargs):
         pass
+
+
+class OpenIdView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        code = kwargs.get('code')
+        if code:
+            print('code:',code)
+            url = 'https://api.weixin.qq.com/sns/jscode2session?appid=%s&s' \
+                  'ecret=%s&js_code=%s&grant_type=authorization_code' % (app_id,app_secret,code)
+            res = requests.get(url=url)
+            print(res.text)
+            return Response(res.json())
+        else:
+            return Response('请传入code参数',status=400)
+            #return Response('请传入code参数')

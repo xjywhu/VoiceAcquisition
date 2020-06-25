@@ -22,7 +22,8 @@ API_V1 = [
     url(r'^task_context_info/$',Task_ContextView.as_view(),name='task_context_info'), # 获取所有句子、增加句子
     url(r'^task_context_info/(?P<tid>\d+)$',Task_ContextView.as_view(),name='task_context_info'), # 获取某一任务对应的所有句子
     url(r'^task_context_info/(?P<tid>\d+)/(?P<context>\w+)$',Task_ContextView.as_view(),name='task_context_info'),# 修改某一句子、删除某一句子
-    url(r'^images/(?P<wx_number>\w+)', ImageView.as_view(), name='images'), # 获得图片
+    url(r'^images/(?P<wx_number>\w+)$', ImageView.as_view(), name='images'), # 获得图片
+    url(r'^openid/(?P<code>\w+)$',OpenIdView.as_view(),name='openid'),
 ]
 
 API_V1 += router.urls

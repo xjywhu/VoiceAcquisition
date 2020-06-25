@@ -18,6 +18,12 @@
 				"navigationBarTitleText": "任务广场"
 			}
         }
+		,{
+		    "path" : "pages/Login/Login",
+		    "style" : {
+				"navigationBarTitleText": "登录"
+			}
+		}
     ],
 	
 	"globalStyle": {

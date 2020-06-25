@@ -1,9 +1,0 @@
-
-.test
-{
-	-webkit-box-orient: horizontal;
-	-webkit-box-direction: normal;
-	-webkit-flex-direction: row;
-	        flex-direction: row;
-}
-
