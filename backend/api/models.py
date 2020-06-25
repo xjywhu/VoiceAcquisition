@@ -20,10 +20,10 @@ class User(models.Model):
     wx_number = models.CharField(max_length=50, verbose_name='微信号', primary_key=True)
     nickName = models.CharField(max_length=50, verbose_name='昵称',null=True,default='请输入昵称')
     age = models.IntegerField(verbose_name='年龄',null=True)
-    sex = models.BooleanField(verbose_name='性别',null=True)
+    sex = models.CharField(max_length=3,verbose_name='性别',null=True)
     score = models.IntegerField(verbose_name='积分',default=0,null=True)
     native_place = models.CharField(max_length=50,verbose_name='籍贯',default='',null=True)
-    image = models.ImageField(upload_to=path_and_rename(),null=True)
+    image = models.CharField(max_length=200,null=True)
 
     REQUIRED_FIELDS = ['wx_number']
     class Meta:

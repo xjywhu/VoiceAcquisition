@@ -15,15 +15,16 @@ task_sentence_service = Task_ContextViewSet.as_view({"get":"list","post":"create
 
 API_V1 = [
     url(r'^users_service/$', users_service, name='users_service'),
-    url(r'^user_info/(?P<pk>\w+)$',UserView.as_view(),name='user_info'),  # 获取单个用户信息、修改某个用户信息、删除某个用户信息
+    url(r'^user_info/(?P<pk>.*)$',UserView.as_view(),name='user_info'),  # 获取单个用户信息、修改某个用户信息、删除某个用户信息
+    #path(r'^user_info/<str:pk>/',UserView.as_view(),name='user_info'),  # 获取单个用户信息、修改某个用户信息、删除某个用户信息
     url(r'^user_info/$',UserView.as_view(),name='user_info'),  # 获取所有用户信息、增加用户信息
     url(r'^task_info/(?P<tid>\d+)$',TaskView.as_view(),name='task_info'), # 获取单个任务信息、修改某个任务信息、删除某个任务信息
     url(r'^task_info/$',TaskView.as_view(),name='task_info'),  # 获取所有任务信息、增加任务信息
     url(r'^task_context_info/$',Task_ContextView.as_view(),name='task_context_info'), # 获取所有句子、增加句子
     url(r'^task_context_info/(?P<tid>\d+)$',Task_ContextView.as_view(),name='task_context_info'), # 获取某一任务对应的所有句子
-    url(r'^task_context_info/(?P<tid>\d+)/(?P<context>\w+)$',Task_ContextView.as_view(),name='task_context_info'),# 修改某一句子、删除某一句子
-    url(r'^images/(?P<wx_number>\w+)$', ImageView.as_view(), name='images'), # 获得图片
-    url(r'^openid/(?P<code>\w+)$',OpenIdView.as_view(),name='openid'),
+    url(r'^task_context_info/(?P<tid>\d+)/(?P<context>.*)$',Task_ContextView.as_view(),name='task_context_info'),# 修改某一句子、删除某一句子
+    url(r'^images/(?P<wx_number>.*)$', ImageView.as_view(), name='images'), # 获得图片
+    url(r'^openid/(?P<code>.*)$',OpenIdView.as_view(),name='openid'),
 ]
 
 API_V1 += router.urls

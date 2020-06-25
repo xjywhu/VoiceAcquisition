@@ -1,5 +1,5 @@
 import os
-
+import json
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -50,9 +50,18 @@ class UserView(APIView):
         pk = kwargs.get('pk')
         if not pk:
             # id错误
+            print('获取pk失败')
             return Response('获取pk失败')
         else:
-            user = User.objects.filter(wx_number=pk).first()
+            # user = User.objects.filter(wx_number=pk).first()
+            print('pk=',pk)
+            res = User.objects.get_or_create(wx_number=pk)
+            user = res[0]
+            isCreated = res[1]
+            if isCreated:
+                # 创建
+                print('是创建的')
+            print(request.data)
             serializer = UserSerializer(instance=user, data=request.data)
             if serializer.is_valid():
                 serializer.save()

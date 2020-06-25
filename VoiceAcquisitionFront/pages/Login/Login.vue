@@ -63,9 +63,24 @@
 									global.user_data.avatarUrl = res.detail.userInfo.avatarUrl;
 									// 存入数据库
 									var base_url = "http://127.0.0.1:8000/api/v1/";
-									
-									
-									
+									var data = {
+										wx_number:global.user_data.wx_number,
+										nickName : global.user_data.nickNames,
+										native_place:global.user_data.native,
+										sex:global.user_data.sex,
+										age:global.user_data.age,
+										image:global.user_data.avatarUrl
+									}
+									uni.request({
+										url:base_url+'user_info/'+data.wx_number,
+										data:data,
+										method:'PUT',
+										success: res => {
+											console.log(res.data);
+										},
+										fail: () => {},
+										complete: () => {}
+									})
 									
 									uni.navigateBack();
 								}
