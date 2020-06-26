@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/Global.py" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/README.md" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/README.txt" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/delete_voices.py" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/download_voice.py" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/format_transfer.py" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voice2word_baidu/get_word.py" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voices/v1.wav" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voices/v2.wav" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voices/v3.wav" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voices/v4.wav" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/voices/voice.amr" charset="GBK" />
+  </component>
+</project>
