@@ -1,9 +1,10 @@
 <template>
 	<view class="content">
+		<image class="bg-set" src="../../static/image/LoginBG.jpg"></image>
+		<view class='takePlaceView'></view>
 		<!-- #ifdef MP-WEIXIN -->
-		<button type="primary" open-type="getUserInfo" @getuserinfo="getuserinfo" withCredentials="true">微信登录</button>
+		<button type="primary" class='loginBtn' open-type="getUserInfo" @getuserinfo="getuserinfo" withCredentials="true">微信登录</button>
 		<!-- #endif -->
-		login...
 	</view>
 </template>
 
@@ -100,4 +101,23 @@
 </script>
 
 <style>
+	.takePlaceView{
+		/* height: 50%; */
+	}
+	.content{
+		/* display: flex; */
+	}
+	.loginBtn{
+		position: fixed;
+		width: 100%;
+		top: 40%;
+	}
+	.bg-set{
+	    position: fixed;
+	    width: 100%;
+	    height: 100%;
+	    top: 0;
+	    left: 0;
+	    z-index: -1;
+	}
 </style>

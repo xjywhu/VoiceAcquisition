@@ -41,6 +41,7 @@
 		
 </template>
 
+var _this;
 <script>
 	import uniListItem from '@/components/uni-list-item/uni-list-item.vue'
 	export default {
@@ -61,7 +62,6 @@
 			}
 		},
 		methods: {
-			
 		},
 		onShow:function(){
 			let _self = this;
@@ -75,19 +75,26 @@
 			_self.show = global.user_data.show;
 			_self.hidden = global.user_data.hidden;
 		},
-		onLoad: function(option) {
+		onShow:function(){
+			console.log(global.isLogin);
 			if(!global.isLogin){
 				console.log('未登录...');
+				//showUniPop();
 				uni.showModal({
 					title:'提醒',
 					content:'请登录',
-					success:function(){
-						uni.navigateTo({
-							url:'../Login/Login'
-						})
-					}
-				})
+					success:function(res){
+						if(res.confirm){
+							uni.navigateTo({
+								url:'../Login/Login'
+							});
+						}
+					},
+				});
 			}
+		},
+		onLoad: function(option) {
+			
 		}
 	}
 </script>
