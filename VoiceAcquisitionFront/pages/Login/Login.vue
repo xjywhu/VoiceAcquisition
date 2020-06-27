@@ -109,8 +109,9 @@
 	}
 	.loginBtn{
 		position: fixed;
-		width: 100%;
+		width: 50%;
 		top: 40%;
+		left: 25%;
 	}
 	.bg-set{
 	    position: fixed;
