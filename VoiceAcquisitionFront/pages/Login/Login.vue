@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="bg-set" src="../../static/image/LoginBG.jpg"></image>
+		<image class="bg-set" src="../../static/image/LoginBG.png"></image>
 		<view class='takePlaceView'></view>
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="primary" class='loginBtn' open-type="getUserInfo" @getuserinfo="getuserinfo" withCredentials="true">微信登录</button>

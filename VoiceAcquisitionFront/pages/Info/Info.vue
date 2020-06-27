@@ -74,8 +74,6 @@ var _this;
 			_self.native = global.user_data.native;
 			_self.show = global.user_data.show;
 			_self.hidden = global.user_data.hidden;
-		},
-		onShow:function(){
 			console.log(global.isLogin);
 			if(!global.isLogin){
 				console.log('未登录...');
