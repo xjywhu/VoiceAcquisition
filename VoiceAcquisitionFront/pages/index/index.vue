@@ -50,11 +50,35 @@
 
 <script>
 	import numSelect from '../../components/poiuy-numSelect/numSelect.vue'
+	import lFile from'../../components/l-file/l-file.vue'
     export default {
+		data() {
+			return {
+				localPath: ''
+			}
+		},
         components: {
-			numSelect 
+			numSelect
         },
-        
+        onLoad:function(){
+        	// uni.chooseImage({
+        	// 	count:1,
+        	// 	success:function(res){
+        	// 		console.log(res);
+        	// 	}
+        	// })
+        },
+		methods:{
+			chooseFile:function(){
+				uni.chooseImage({
+					count: 1,
+					success:function(res){
+						console(res)
+					}
+				})
+			},
+			
+		}
     }
 </script>
 
