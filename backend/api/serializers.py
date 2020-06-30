@@ -26,3 +26,8 @@ class Task_ContextSerializer(serializers.ModelSerializer):
         model = Task_Context
         fields = '__all__'
 
+class FileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileModel
+        fields = '__all__'
+

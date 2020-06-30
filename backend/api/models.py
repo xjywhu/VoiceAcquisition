@@ -57,3 +57,7 @@ class Task_Context(models.Model):
 
     class Meta:
         unique_together = ('tid', 'sentence')
+
+class FileModel(models.Model):
+    name = models.CharField(max_length=200)
+    file = models.FileField(upload_to='upload',max_length=200)

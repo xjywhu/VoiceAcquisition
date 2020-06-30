@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "任务广场",
+  "usingComponents": {
+    "uni-search-bar": "/components/uni-search-bar/uni-search-bar",
+    "uni-card": "/components/uni-card/uni-card"
+  }
+}

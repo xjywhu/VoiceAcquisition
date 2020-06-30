@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "任务发布",
+  "usingComponents": {
+    "num-select": "/components/poiuy-numSelect/numSelect"
+  }
+}

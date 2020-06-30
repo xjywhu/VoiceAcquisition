@@ -91,5 +91,10 @@
     },
     "uniStatistics" : {
         "enable" : false
-    }
+    },
+	"WechatSI":{
+		"version":"0.3.0",
+		"provider":"wx069ba97219f66d99"
+	}
+	
 }

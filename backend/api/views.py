@@ -227,3 +227,7 @@ class OpenIdView(APIView):
         else:
             return Response('请传入code参数',status=400)
             #return Response('请传入code参数')
+
+class FileViewSet(ModelViewSet):
+    queryset = FileModel.objects.all()
+    serializer_class = FileSerializer

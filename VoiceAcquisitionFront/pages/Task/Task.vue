@@ -15,9 +15,10 @@
 		<!-- 标题卡片模式 -->
 		<view class="content">
 			<view class="uni-list">
-				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" @tap="openinfo" :data-newsid="item.tid">
+				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" :data-newsid="item.tid">
 					<uni-card
 						:title= "item.title"
+						@click="toSpeech"
 						mode="title" 
 						:is-shadow="true" 
 						:thumbnail= "base_url+'images/cccccc'"
@@ -67,10 +68,15 @@
 			});
 		},
 		methods: {
-			openinfo(e) {
-				var newsid = e.currentTarget.dataset.newsid;
+			// openinfo(e) {
+			// 	var newsid = e.currentTarget.dataset.newsid;
+			// 	uni.navigateTo({
+			// 		url: '../info/info?newsid='+newsid
+			// 	});
+			// }
+			toSpeech(){
 				uni.navigateTo({
-					url: '../info/info?newsid='+newsid
+					url: '/pages/Speech/Speech',
 				});
 			}
 		},

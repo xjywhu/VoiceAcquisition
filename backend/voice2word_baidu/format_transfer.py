@@ -1,6 +1,6 @@
 # 作者：邹鑫、石亮禾
 import os
-from voice2word_baidu import Global
+import Global
 
 
 def wav2pcm(wav_file):
