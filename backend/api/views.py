@@ -7,6 +7,8 @@ from .serializers import *
 from .models import *
 from django.http import HttpResponse
 import requests
+from django.db.models import Q
+import random
 
 app_id = "wxfbbdf46e1f2546ef"
 app_secret = "f71231c7013b49a9bdb1f60136dcbba5"
@@ -100,25 +102,39 @@ class TaskView(APIView):
             serializer = TaskSerializer(instance=task, many=False)
             return Response(serializer.data)
 
-    def post(self,request,*args,**kwargs):
-        ''' 上传一个任务列表 '''
-        serializer = TaskSerializer(data=request.data)
-        if serializer.is_valid():
+    def dealPost(self,request,*args,**kwargs):
+        try:
             data = request.data
             user = User.objects.filter(wx_number=data['releaser']).first()
             title = data['title']
             money = data['money']
             threshold_value = data['threshold_value']
             description = data['description']
-            obj = Task(releaser=user,title=title,money=money,threshold_value=threshold_value,description=description)
+            obj = Task(releaser=user, title=title, money=money, threshold_value=threshold_value, description=description)
             if user is not None:
+                print('before new task save')
                 obj.save()
+                print('after new task save')
                 # serializer.save()
                 return Response('保存成功')
             else:
                 return Response('wx_number不存在')
+        except KeyError as e:
+            return Response('缺少字段，请补充完整')
+
+    def post(self,request,*args,**kwargs):
+        ''' 上传一个任务列表 '''
+        print('before create task serializer')
+        serializer = TaskSerializer(data=request.data)
+        print('after create task serializer')
+        if serializer.is_valid() or (len(serializer.errors) == 1 and serializer.errors.get('tid')):
+            print(serializer.errors)
+            return self.dealPost(request,args,kwargs)
         else:
+            print(serializer.errors)
             return Response(serializer.errors)
+
+
 
     def put(self, request, *args, **kwargs):
         '''更新'''
@@ -146,64 +162,85 @@ class TaskView(APIView):
 
 
 class ContextView(APIView):
-    def get(self,request,*args,**kwargs):
-        '''查找'''
-        pk = kwargs.get('pk')
-        print("pk = ",pk)
-        if not pk:
-            # 获取全部信息
-            queryset = Context.objects.all()
-            serializer = ContextSerializer(instance=queryset, many=True)
-            return Response(serializer.data)
-        else:
-            # 获取某一tid对应的所有
-            context = Context.objects.filter(cid=pk).first()
-            serializer = ContextSerializer(instance=context, many=False)
-            return Response(serializer.data)
 
     def get_recommended_contexts(self):
-        pass
+        MAX = 20
+        MAX_WILLFINISH = 5
+        if Context.objects.count() <= MAX:
+            # 获取全部信息
+            return Context.objects.all()
+        else: # 获取MAX个信息
+            # queryset = Context.objects.filter(task_id=[1,2])
+            taskQuerySet = Task.objects.order_by('rest').values('tid')[:MAX_WILLFINISH]
+            task_ids = [task['tid'] for task in taskQuerySet]
+            nearlyFinishedContextsQuerySet = Context.objects.none()
+            for tid in task_ids:
+                cQuerySet = Context.objects.filter(~Q(required_times=0), task_id=tid)[:1]
+                nearlyFinishedContextsQuerySet = nearlyFinishedContextsQuerySet | cQuerySet
+            REST_NUM = MAX - MAX_WILLFINISH
 
-    def newGet(self, request, *args, **kwargs):
+            print('下面是选出的快完成的context的id:')
+            for c in nearlyFinishedContextsQuerySet:
+                print(c.cid)
+            ContextQuerySet = Context.objects.all()
+            for obj in nearlyFinishedContextsQuerySet:
+                ContextQuerySet = ContextQuerySet.filter(~Q(cid=obj.cid))
+            size = len(ContextQuerySet)
+            random_indexs = random.sample(range(0, size), REST_NUM)
+            print('下面是随机index')
+            print(random_indexs)
+            print('下面是除去快完成的context后剩下的context的id')
+            for c in ContextQuerySet:
+                print(c.cid)
+            cids = [ContextQuerySet[idx].cid for idx in random_indexs]
+            print('下面是随机选取的id:')
+            print(cids)
+            randomContextQuerySet = Context.objects.filter(pk__in=cids)
+            print('下面是选出来的随机QuerySet中的Context的id:')
+            for c in randomContextQuerySet:
+                print(c.cid)
+            queryset = Context.objects.all()[:MAX_WILLFINISH]
+            return queryset
+
+    def get(self, request, *args, **kwargs):
         ''' 新的post函数，根据某些算法，找出50条句子发送给前端 '''
         pk = kwargs.get('pk')
-        MAX = 50
-        
         if not pk:
-            # 获取全部信息,但是只会给出50条
-            if Context.objects.count() <= MAX:
-                queryset = Context.objects.all()
-                serializer = ContextSerializer(instance=queryset, many=True)
-                return Response(serializer.data)
-            else: # 大于50，执行算法
-                # taskQuerySet =
-                queryset = Context.objects.all()
-                serializer = ContextSerializer(instance=queryset, many=True)
-                return Response(serializer.data)
+            contexts = self.get_recommended_contexts()
+            serializer = ContextSerializer(instance=contexts, many=True)
+            return Response(serializer.data)
         else:
             # 获取某一tid对应的所有
             context = Context.objects.filter(cid=pk).first()
             serializer = ContextSerializer(instance=context, many=False)
             return Response(serializer.data)
 
-    def post(self, request, *args, **kwargs):
-        '''上传'''
-        data = request.data
-        serializer = ContextSerializer(data=data)
-        if serializer.is_valid():
+    def dealPost(self, request, *args, **kwargs):
+        try:
+            data = request.data
             task = Task.objects.filter(tid=data['task']).first()
             print(task)
             required_times = data['required_times']
-            finish_times = data['finish_times']
+            total_times = data['total_times']
             sentence = data['sentence']
             if task is not None:
-                obj = Context(task=task, required_times=required_times, finish_times=finish_times, sentence=sentence)
+                obj = Context(task=task, required_times=required_times, total_times=total_times, sentence=sentence)
                 obj.save()
-                #serializer.save()
+                # serializer.save()
                 return Response("成功")
             else:
                 return Response('task不存在')
+        except KeyError as e:
+            return Response('缺少字段，请补充完整')
+
+    def post(self, request, *args, **kwargs):
+        '''上传'''
+        serializer = ContextSerializer(data=request.data)
+        if serializer.is_valid() or (len(serializer.errors) == 1 and serializer.errors.get('cid')):
+            print(serializer.errors)
+            return self.dealPost(request,args,kwargs)
         else:
+            print(serializer.errors)
             return Response(serializer.errors)
 
 

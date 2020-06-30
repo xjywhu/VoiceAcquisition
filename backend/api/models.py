@@ -55,9 +55,9 @@ class Context(models.Model):
     task = models.ForeignKey(verbose_name='task', to='Task',on_delete=models.CASCADE)
     sentence = models.CharField(max_length=100, verbose_name='内容')
     required_times = models.IntegerField(default=10)
-    finish_times = models.IntegerField(default=0)
+    total_times = models.IntegerField(default=10)
 
-    REQUIRED_FIELDS = ['task','sentence','required_times','finish_times']
+    REQUIRED_FIELDS = ['task','sentence','required_times','total_times']
     class Meta:
         unique_together = ('task', 'sentence')
 

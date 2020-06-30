@@ -8,15 +8,17 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('wx_number','nickName','score','native_place', 'image')
 
 class TaskSerializer(serializers.ModelSerializer):
+    #id = serializers.IntegerField(source='tid')
     class Meta:
         model = Task
-        fields = ['releaser','title','money','threshold_value','description']
+        fields = ['tid','releaser','title','money','threshold_value','description']
         depth = 1
 
 class ContextSerializer(serializers.ModelSerializer):
+    #id = serializers.IntegerField(source='cid')
     class Meta:
         model = Context
-        fields = ['task','sentence','required_times','finish_times']
+        fields = ['cid','task','sentence','required_times','total_times']
         depth = 2
 
 class FileSerializer(serializers.ModelSerializer):
