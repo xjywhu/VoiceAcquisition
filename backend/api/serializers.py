@@ -7,24 +7,17 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('wx_number','nickName','score','native_place', 'image')
 
-    # def update(self, instance, validated_data):
-    #     instance.nickName = validated_data.get('nickName', instance.nickName)
-    #     instance.native_place = validated_data.get('native_place', instance.native_place)
-    #     # 还有头像
-
-
-
-
 class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
-        fields = ['releaser', 'title','money', 'threshold_value', 'description']
+        fields = ['releaser','title','money','threshold_value','description']
         depth = 1
 
-class Task_ContextSerializer(serializers.ModelSerializer):
+class ContextSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Task_Context
-        fields = '__all__'
+        model = Context
+        fields = ['task','sentence','required_times','finish_times']
+        depth = 2
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:

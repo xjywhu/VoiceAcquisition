@@ -24,6 +24,8 @@ class User(models.Model):
     score = models.IntegerField(verbose_name='积分',default=0,null=True)
     native_place = models.CharField(max_length=50,verbose_name='籍贯',default='',null=True)
     image = models.CharField(max_length=200,null=True)
+    task_times = models.IntegerField(verbose_name='做任务次数',default=0)
+    success_times = models.IntegerField(verbose_name='成功次数',default=0)
 
     REQUIRED_FIELDS = ['wx_number']
     class Meta:
@@ -41,22 +43,23 @@ class Task(models.Model):
     money = models.IntegerField(verbose_name='金额')
     threshold_value = models.FloatField(verbose_name='阈值')
     description = models.CharField(max_length=1000,verbose_name='任务描述')
-
-    REQUIRED_FIELDS = ['tid','releaser_wx_number','title','money','description']
+    # 还剩下多少个语音就完成了，一开始设置为0，最后计算出所有的语句的需求量之和替换当前字段值
+    rest = models.BigIntegerField(verbose_name='剩余语句数',default=0)
+    REQUIRED_FIELDS = ['tid','releaser','title','money','description']
 
     class Meta:
         unique_together = ('tid',)
 
-class Task_Context(models.Model):
-    tid = models.ForeignKey(verbose_name='tid', to='Task',on_delete=models.CASCADE)
-    # tid = models.IntegerField(verbose_name='tid')
+class Context(models.Model):
+    cid = models.IntegerField(verbose_name='id',primary_key=True,auto_created=True)
+    task = models.ForeignKey(verbose_name='task', to='Task',on_delete=models.CASCADE)
     sentence = models.CharField(max_length=100, verbose_name='内容')
     required_times = models.IntegerField(default=10)
     finish_times = models.IntegerField(default=0)
-    REQUIRED_FIELDS = ['tid','sentence']
 
+    REQUIRED_FIELDS = ['task','sentence','required_times','finish_times']
     class Meta:
-        unique_together = ('tid', 'sentence')
+        unique_together = ('task', 'sentence')
 
 class FileModel(models.Model):
     name = models.CharField(max_length=200)

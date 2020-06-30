@@ -22,8 +22,8 @@ class TaskViewSet(ModelViewSet):
 
 
 class Task_ContextViewSet(ModelViewSet):
-    queryset = Task_Context.objects.all()
-    serializer_class = Task_ContextSerializer
+    queryset = Context.objects.all()
+    serializer_class = ContextSerializer
 
 
 class UserView(APIView):
@@ -104,8 +104,19 @@ class TaskView(APIView):
         ''' 上传一个任务列表 '''
         serializer = TaskSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            data = request.data
+            user = User.objects.filter(wx_number=data['releaser']).first()
+            title = data['title']
+            money = data['money']
+            threshold_value = data['threshold_value']
+            description = data['description']
+            obj = Task(releaser=user,title=title,money=money,threshold_value=threshold_value,description=description)
+            if user is not None:
+                obj.save()
+                # serializer.save()
+                return Response('保存成功')
+            else:
+                return Response('wx_number不存在')
         else:
             return Response(serializer.errors)
 
@@ -134,36 +145,73 @@ class TaskView(APIView):
             return Response('删除成功')
 
 
-class Task_ContextView(APIView):
+class ContextView(APIView):
     def get(self,request,*args,**kwargs):
         '''查找'''
-        tid = kwargs.get('tid')
-        if not tid:
+        pk = kwargs.get('pk')
+        print("pk = ",pk)
+        if not pk:
             # 获取全部信息
-            queryset = Task_Context.objects.all()
-            serializer = Task_ContextSerializer(instance=queryset, many=True)
+            queryset = Context.objects.all()
+            serializer = ContextSerializer(instance=queryset, many=True)
             return Response(serializer.data)
         else:
             # 获取某一tid对应的所有
-            queryset = Task_Context.objects.filter(tid=tid)
-            serializer = Task_ContextSerializer(instance=queryset, many=True)
+            context = Context.objects.filter(cid=pk).first()
+            serializer = ContextSerializer(instance=context, many=False)
+            return Response(serializer.data)
+
+    def get_recommended_contexts(self):
+        pass
+
+    def newGet(self, request, *args, **kwargs):
+        ''' 新的post函数，根据某些算法，找出50条句子发送给前端 '''
+        pk = kwargs.get('pk')
+        MAX = 50
+        
+        if not pk:
+            # 获取全部信息,但是只会给出50条
+            if Context.objects.count() <= MAX:
+                queryset = Context.objects.all()
+                serializer = ContextSerializer(instance=queryset, many=True)
+                return Response(serializer.data)
+            else: # 大于50，执行算法
+                # taskQuerySet =
+                queryset = Context.objects.all()
+                serializer = ContextSerializer(instance=queryset, many=True)
+                return Response(serializer.data)
+        else:
+            # 获取某一tid对应的所有
+            context = Context.objects.filter(cid=pk).first()
+            serializer = ContextSerializer(instance=context, many=False)
             return Response(serializer.data)
 
     def post(self, request, *args, **kwargs):
         '''上传'''
-        serializer = Task_ContextSerializer(data=request.data)
+        data = request.data
+        serializer = ContextSerializer(data=data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            task = Task.objects.filter(tid=data['task']).first()
+            print(task)
+            required_times = data['required_times']
+            finish_times = data['finish_times']
+            sentence = data['sentence']
+            if task is not None:
+                obj = Context(task=task, required_times=required_times, finish_times=finish_times, sentence=sentence)
+                obj.save()
+                #serializer.save()
+                return Response("成功")
+            else:
+                return Response('task不存在')
         else:
             return Response(serializer.errors)
 
+
     def put(self, request, *args, **kwargs):
-        tid = kwargs.get('tid')
-        context = kwargs.get('context')
-        if tid and context:
-            task_context = Task_Context.objects.filter(tid=tid,context=context).first()
-            serializer = Task_ContextSerializer(instance=task_context, data=request.data)
+        cid = kwargs.get('pk')
+        if cid:
+            context = Context.objects.filter(cid=cid).first()
+            serializer = ContextSerializer(instance=context, data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data)
@@ -173,10 +221,9 @@ class Task_ContextView(APIView):
             return Response('获取tid或context失败')
 
     def delete(self, request, *args, **kwargs):
-        tid = kwargs.get('tid')
-        context = kwargs.get('context')
-        if tid and context:
-            Task_Context.objects.filter(tid=tid,context=context).delete()
+        cid = kwargs.get('pk')
+        if cid:
+            Context.objects.filter(cid=cid).delete()
             return Response('删除成功')
         else:
             return Response('删除失败')
