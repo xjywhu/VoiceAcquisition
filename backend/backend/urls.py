@@ -1,3 +1,4 @@
+import os
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
@@ -26,6 +27,7 @@ API_V1 = [
     url(r'^context_info/(?P<tid>\d+)/(?P<context>.*)$',ContextView.as_view(),name='context_info'),# 修改某一句子、删除某一句子
     url(r'^images/(?P<wx_number>.*)$', ImageView.as_view(), name='images'), # 获得图片
     url(r'^openid/(?P<code>.*)$',OpenIdView.as_view(),name='openid'),
+    url(r'^voices_info/(?P<cid>\d+)/(?P<wx_number>.*)$',VoiceView.as_view(),name='voices_info'),
 ]
 
 API_V1 += router.urls

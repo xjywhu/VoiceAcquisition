@@ -1,6 +1,11 @@
 # coding=gbk
 # 作者：邹鑫、石亮禾
-import Global, format_transfer, delete_voices, download_voice
+import os,sys
+# from backend import settings
+# sys.path.append(settings.BASE_DIR)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.getcwd().split(BASE_DIR)[0] + BASE_DIR)
+from voice2word_baidu import Global, format_transfer, delete_voices, download_voice
 from aip import AipSpeech
 
 # 作用：将传入的音频识别为文字
@@ -68,7 +73,7 @@ class Converter:
 #######################################################花旗测试用例 end
 
 ####################################################### 语音收集APP测试用例 start
-converter = Converter()
-res = converter.get_words('http://tmp/wxfbbdf46e1f2546ef.o6zAJs1WD6ZBhsSA0-IkczMPWtXE.G64x9jvhFpt571279d946a0ce10647a15976e9bce513.durationTime=3307.mp3')
-print(res)
+# converter = Converter()
+# res = converter.get_words(BASE_DIR+'/voices/v4.wav')
+# print(res[0])
 ####################################################### 语音收集APP测试用例 end

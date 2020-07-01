@@ -9,6 +9,8 @@ from django.http import HttpResponse
 import requests
 from django.db.models import Q
 import random
+from voice2word_baidu.get_word import Converter
+from tools.file_mover import FileHandler
 
 app_id = "wxfbbdf46e1f2546ef"
 app_secret = "f71231c7013b49a9bdb1f60136dcbba5"
@@ -42,10 +44,10 @@ class UserView(APIView):
         pk = kwargs.get('pk')
         if not pk:
             # 删除失败
-            return Response('删除失败')
+            return Response({'StatusCode':'fail','failReason':'未在url中加入对应的wx_number'})
         else:
             User.objects.filter(wx_number=pk).delete()
-            return Response('删除成功')
+            return Response({'StatusCode':'success'})
 
     def put(self,request,*args,**kwargs):
         '''更新'''
@@ -53,7 +55,7 @@ class UserView(APIView):
         if not pk:
             # id错误
             print('获取pk失败')
-            return Response('获取pk失败')
+            return Response({'StatusCode':'fail','failReason':'未在url中加入对应的wx_number'})
         else:
             # user = User.objects.filter(wx_number=pk).first()
             print('pk=',pk)
@@ -116,11 +118,13 @@ class TaskView(APIView):
                 obj.save()
                 print('after new task save')
                 # serializer.save()
-                return Response('保存成功')
+                return Response({'StatusCode':'success'})
             else:
-                return Response('wx_number不存在')
+                return Response({'StatusCode': 'fail','failReason':'releaser的id不存在'})
+                #return Response('wx_number不存在')
         except KeyError as e:
-            return Response('缺少字段，请补充完整')
+            return Response({'StatusCode': 'fail','failReason':'缺少字段，请补充完整'})
+            # return Response('缺少字段，请补充完整')
 
     def post(self,request,*args,**kwargs):
         ''' 上传一个任务列表 '''
@@ -141,7 +145,7 @@ class TaskView(APIView):
         tid = kwargs.get('tid')
         if not tid:
             # id错误
-            return Response('获取tid失败')
+            return Response({'StatusCode':'success','failReason':'未在url中填入tid'})
         else:
             task = Task.objects.filter(tid=tid).first()
             serializer = TaskSerializer(instance=task, data=request.data)
@@ -155,10 +159,10 @@ class TaskView(APIView):
         tid = kwargs.get('tid')
         if not tid:
             # 删除失败
-            return Response('删除失败')
+            return Response({'StatusCode':'fail','failReason':'未在url中填入tid'})
         else:
             Task.objects.filter(tid=tid).delete()
-            return Response('删除成功')
+            return Response({'StatusCode':'success'})
 
 
 class ContextView(APIView):
@@ -227,11 +231,13 @@ class ContextView(APIView):
                 obj = Context(task=task, required_times=required_times, total_times=total_times, sentence=sentence)
                 obj.save()
                 # serializer.save()
-                return Response("成功")
+                return Response({'StatusCode':'success'})
+                #return Response("成功")
             else:
-                return Response('task不存在')
+                return Response({'StatusCode': 'fail','failReason':'task不存在'})
+                #return Response('task不存在')
         except KeyError as e:
-            return Response('缺少字段，请补充完整')
+            return Response({'StatusCode': 'fail','failReason':'缺少字段，请补充完整'})
 
     def post(self, request, *args, **kwargs):
         '''上传'''
@@ -255,15 +261,15 @@ class ContextView(APIView):
             else:
                 return Response(serializer.errors)
         else:
-            return Response('获取tid或context失败')
+            return Response({'StatusCode':'fail','failReason':'url中获取tid或context失败'})
 
     def delete(self, request, *args, **kwargs):
         cid = kwargs.get('pk')
         if cid:
             Context.objects.filter(cid=cid).delete()
-            return Response('删除成功')
+            return Response({'StatusCode':'success'})
         else:
-            return Response('删除失败')
+            return Response({'StatusCode':'fail','failReason':'url中获取cid失败'})
 
 
 class ImageView(APIView):
@@ -309,9 +315,120 @@ class OpenIdView(APIView):
             print(res.text)
             return Response(res.json())
         else:
-            return Response('请传入code参数',status=400)
+            return Response({'StatusCode':'fail','failReason':'未在url中获得code参数'})
+            #return Response('请传入code参数',status=400)
             #return Response('请传入code参数')
 
 class FileViewSet(ModelViewSet):
     queryset = FileModel.objects.all()
     serializer_class = FileSerializer
+
+
+VOICE_BASE_URL = '../voices_store/'
+
+class VoiceView(APIView):
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def get_rate(self,origin_str, convert_str):
+        '''
+        :param origin_str: context表中的句子
+        :param convert_str: 语音转化而成的句子
+        :return: 两个句子的匹配度  0-1之间
+        '''
+        return 1
+
+    def post(self, request, *args, **kwargs):
+        cid = kwargs.get('cid')
+        wx_number = kwargs.get('wx_number')
+        default_filename = 'tmp'
+        default_ext = '.mp3'
+        api_ext = '.pcm'
+        dir = os.path.join(settings.BASE_DIR, 'voices/')
+
+        dst_dir = os.path.join(settings.BASE_DIR, 'voice_store/')
+        if not cid or not wx_number: # url没有给出cid或wx_number
+            print('url中获取cid或wx_number失败')
+            return Response({'StatusCode':'fail','failReason':'url中获取cid或wx_number失败'})
+
+        print('cid : ',cid)
+        print('wx_number : ',wx_number)
+        # 给出了cid和wx_number，接着往下做
+        # 失败的可能：1、没达到阈值   2、这个任务正好刚才被人做完  3、
+        file = request.FILES.get("voice_file", None)
+        if not file:
+            print('接收文件失败.')
+            return Response({'StatusCode': 'fail', 'failReason': '接收文件失败'})
+
+        # file接收到了,就存储文件为  default_filename + default_ext
+        destination = open(os.path.join(dir, default_filename + default_ext),
+                           'wb+')
+        for chunk in file.chunks():
+            destination.write(chunk)
+        destination.close()
+        # 调用api获取结果
+        converter = Converter()
+        words_from_voice = converter.get_words(dir+default_filename+default_ext)[0]
+        print('words_from_voice: ',words_from_voice)
+        # 根据用户cid获取文本
+        context = Context.objects.filter(cid=cid).first()
+        words_from_context = context.sentence
+        print('words_from_context: ',words_from_context)
+        min_rate = context.task.threshold_value / 100  # 设定的阈值
+        print('min_rate: ',min_rate)
+        rate = self.get_rate(words_from_context,words_from_voice)  # 匹配率
+        required_times = context.required_times
+        task_id = context.task.tid
+        print('required_times: ',required_times)
+        if required_times <= 0:
+            # 删除本地文件 --- 暂时不用删了
+            return Response({'StatusCode':'fail','failReason':'此任务已被其他用户完成'})
+
+        # 修改wx_number的用户的 task_times字段，让其加1
+        #######
+        user = User.objects.filter(wx_number=wx_number).first()
+        user.task_times = user.task_times+1
+        user.save()
+        if rate < min_rate:
+            # 删除本地文件 --- 暂时不用删了
+            return Response({'StatusCode':'fail','failReason':'匹配度未达到阈值'})
+        # 匹配度达到
+        # 修改wx_number的用户的 success_times字段，让其加1
+        #######
+        user = User.objects.filter(wx_number=wx_number).first()
+        user.success_times = user.success_times + 1
+        # context的required_times 减1
+        ######
+        context.required_times = context.required_times-1
+        # 对应的task的 rest 减1
+        ######
+        task = Task.objects.filter(tid=task_id).first()
+        task.rest = task.rest-1
+        # 增加用户的积分
+        ######
+        user.score = user.score+task.money
+        # 保存
+        ######
+        user.save()
+        task.save()
+        context.save()
+        # 将MP3文件重命名并移动到指定文件
+        print(type(task_id),type(cid))
+        task_dir = dst_dir+"%d/" % task_id
+        move_to_dir = task_dir+"%s/" % cid
+        dst_filename = ("%d"%required_times) + default_ext
+        move_from_dir = dir
+        src_filename = default_filename+default_ext
+        if not os.path.exists(task_dir):
+            os.mkdir(task_dir)
+        if not os.path.exists(move_to_dir):
+            os.mkdir(move_to_dir)
+        handler = FileHandler(move_from_dir,move_to_dir)
+        handler.moveFile(src_filename,dst_filename)
+        print('成功移动文件')
+        return Response({'StatusCode': 'success'})
+
+
+
+
+

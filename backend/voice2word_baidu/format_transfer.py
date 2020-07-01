@@ -1,6 +1,8 @@
 # 作者：邹鑫、石亮禾
-import os
-import Global
+import os,sys
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(os.getcwd().split(BASE_DIR)[0] + BASE_DIR)
+from voice2word_baidu import Global
 
 
 def wav2pcm(wav_file):

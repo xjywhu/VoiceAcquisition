@@ -19,14 +19,14 @@
 			recorderManager.onStop(function(res) {
 				console.log(res.tempFilePath)
 				wx.uploadFile({
-					url: "http://127.0.0.1:8000/api/v1/upload/",
+					url: "http://127.0.0.1:8000/api/v1/voices_info/1/oVCRb5GmyJlyChS90erPLg-Jlz6c",
 					filePath: res.tempFilePath,
-					name:"file",
+					name:"voice_file",
 					header: {
 						"Content-Type": "multipart/form-data",
 					},
 					formData:{
-						name:"hh",
+						name:"voice_file",
 					},
 					success: res => {
 						console.log(res)

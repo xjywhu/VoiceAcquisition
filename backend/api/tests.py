@@ -1,6 +1,8 @@
 from django.test import TestCase
-import random
+import random,os,sys
 # Create your tests here.
-list = [1,2,3,4,5,6,7,8,9]
-idx = [1,3,5]
-print(list[idx])
+
+
+base_dir = BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if not os.path.exists(base_dir+'/bbb/ccc'):
+    os.mkdir(base_dir+'/bbb/ccc')
