@@ -18,8 +18,13 @@ class ContextSerializer(serializers.ModelSerializer):
     #id = serializers.IntegerField(source='cid')
     class Meta:
         model = Context
-        fields = ['cid','task','sentence','required_times','total_times']
-        depth = 2
+        fields = '__all__'
+
+class TaskFinishSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskFinish
+        fields = ['user','context','quality']
+        depth = 1
 
 class FileSerializer(serializers.ModelSerializer):
     class Meta:

@@ -52,15 +52,27 @@ class Task(models.Model):
 
 class Context(models.Model):
     cid = models.IntegerField(verbose_name='id',primary_key=True,auto_created=True)
-    task = models.ForeignKey(verbose_name='task', to='Task',on_delete=models.CASCADE)
     sentence = models.CharField(max_length=100, verbose_name='内容')
-    required_times = models.IntegerField(default=10)
-    total_times = models.IntegerField(default=10)
+    token = models.CharField(verbose_name='分词',max_length=200)
+    finished_times = models.IntegerField(verbose_name='完成次数',default=0)
+    threshold_value = models.IntegerField(default=90,verbose_name='阈值')
 
-    REQUIRED_FIELDS = ['task','sentence','required_times','total_times']
+    REQUIRED_FIELDS = ['sentence','token','finished_times']
+
+class TaskFinish(models.Model):
+    uid = models.IntegerField(verbose_name='id',primary_key=True,auto_created=True)
+    user = models.ForeignKey(to='User', verbose_name='任务完成者', on_delete=models.CASCADE)
+    context = models.ForeignKey(to='Context',verbose_name='完成的句子',on_delete=models.CASCADE)
+    quality = models.IntegerField(verbose_name='匹配度',default=0)
+
+    REQUIRED_FIELDS = ['user', 'context', 'quality']
     class Meta:
-        unique_together = ('task', 'sentence')
+        unique_together = ('user','context')
 
 class FileModel(models.Model):
     name = models.CharField(max_length=200)
     file = models.FileField(upload_to='upload',max_length=200)
+
+
+
+
