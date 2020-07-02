@@ -454,6 +454,30 @@ class VoiceView(APIView):
         print('成功移动文件')
         return Response({'StatusCode': 'success'})
 
+class ReleaseContextViewSet(ModelViewSet):
+
+    # def post(self, request, *args, **kwargs):
+    #     pass
+    queryset = FileModel.objects.all()
+    serializer_class = FileSerializer
+
+    def create(self, request, *args, **kwargs):
+        TEMP_DIR = os.path.join(settings.BASE_DIR, 'temp/')
+        default_filename = 'task'
+        default_ext = '.txt'
+        file = request.FILES.get("file", None)
+        if not file:
+            print('接收文件失败.')
+            return Response({'StatusCode': 'fail', 'failReason': '接收文件失败'})
+
+        # file接收到了,就存储文件为  default_filename + default_ext
+        destination = open(os.path.join(TEMP_DIR, default_filename + default_ext),
+                           'wb+')
+        for chunk in file.chunks():
+            destination.write(chunk)
+        destination.close()
+        print('文件下载完成')
+        return Response({'StatusCode': 'success'})
 
 
 

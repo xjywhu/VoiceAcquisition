@@ -10,6 +10,7 @@ router.register(r'users', UserViewSet)
 router.register(r'tasks', TaskViewSet)
 router.register(r'contexts', Task_ContextViewSet)
 router.register(r'upload', FileViewSet)
+router.register(r'release_task',ReleaseContextViewSet)
 
 users_service = UserViewSet.as_view({"get":"list","post":"update"})
 tasks_service = TaskViewSet.as_view({"get":"list","post":"create"})

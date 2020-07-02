@@ -71,7 +71,7 @@ class TaskFinish(models.Model):
 
 class FileModel(models.Model):
     name = models.CharField(max_length=200)
-    file = models.FileField(upload_to='upload',max_length=200)
+    file = models.FileField(upload_to='temp',max_length=200)
 
 
 
