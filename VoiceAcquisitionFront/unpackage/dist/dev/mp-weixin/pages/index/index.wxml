@@ -1,0 +1,1 @@
+<m-slide-list vue-id="8dd740cc-1" data="{{list}}" button="{{buttonList}}" border="{{true}}" data-event-opts="{{[['^click',[['clickMethod']]],['^change',[['changeMethod']]]]}}" bind:click="__e" bind:change="__e" class="data-v-57280228" bind:__l="__l"></m-slide-list>

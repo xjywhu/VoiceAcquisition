@@ -27,13 +27,7 @@
         ,{
             "path" : "pages/Speech/Speech",
             "style" : {}
-        },
-		{
-			"path":"pages/UpLoadFile/UpLoadFile",
-			"style":{
-				"navigationBarTitleText":"测试上传"
-			}
-		}
+        }
     ],
 	
 	"globalStyle": {
@@ -55,7 +49,7 @@
 			"pagePath": "pages/index/index",
 			"iconPath": "static/icon/发布.png",
 			"selectedIconPath": "static/icon/发布.png",
-			"text": "任务发布"
+			"text": "任务列表"
 		}, {
 	        "pagePath": "pages/Task/Task",
 	        "iconPath": "static/icon/任务.png",
@@ -66,11 +60,6 @@
 	        "iconPath": "static/icon/个人中心.png",
 	        "selectedIconPath": "static/icon/个人中心.png",
 	        "text": "个人中心"
-	    }, {
-	        "pagePath": "pages/UpLoadFile/UpLoadFile",
-	        "iconPath": "static/icon/个人中心.png",
-	        "selectedIconPath": "static/icon/个人中心.png",
-	        "text": "测试上传"
 	    }]
 	    /*"midButton": {
 	        "width": "80px",
