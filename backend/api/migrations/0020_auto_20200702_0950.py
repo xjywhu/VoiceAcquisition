@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='context',
-            name='token',
+            name='token_baidu',
             field=models.IntegerField(default=1, max_length=200, verbose_name='分词'),
             preserve_default=False,
         ),

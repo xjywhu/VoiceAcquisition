@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='context',
-            name='token',
+            name='token_baidu',
             field=models.CharField(max_length=200, verbose_name='分词'),
         ),
     ]

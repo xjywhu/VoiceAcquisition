@@ -11,6 +11,7 @@ from django.db.models import Q
 import random
 from voice2word_baidu.get_word import Converter
 from tools.file_mover import FileHandler
+from algorithm.edit_distance import get_similarity
 
 app_id = "wxfbbdf46e1f2546ef"
 app_secret = "f71231c7013b49a9bdb1f60136dcbba5"
@@ -173,7 +174,7 @@ class InternalContextView(APIView):#############################################
     def dealPost(self, request, *args, **kwargs):
         try:
             data = request.data
-            token = data['token']
+            token = data['token_baidu']
             sentence = data['sentence']
             finished_times = data['finished_times']
             obj = Context(token=token,sentence=sentence,finished_times=finished_times)
@@ -352,7 +353,7 @@ class VoiceView(APIView):
         :param convert_str: 语音转化而成的句子
         :return: 两个句子的匹配度  0-1之间
         '''
-        return 0.95
+        return get_similarity(origin_str,convert_str)
 
     def post(self, request, *args, **kwargs):
         cid = kwargs.get('cid')
