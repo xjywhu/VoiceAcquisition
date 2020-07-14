@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "任务发布",
-  "usingComponents": {
-    "m-slide-list": "/components/m-slide-list/m-slide-list"
-  }
-}
