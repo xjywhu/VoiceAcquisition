@@ -57,6 +57,7 @@ class Context(models.Model):
     finished_times = models.IntegerField(verbose_name='完成次数',default=0)
     base_score = models.IntegerField(verbose_name='最高积分',default=100)
     threshold_value = models.IntegerField(default=90,verbose_name='阈值')
+    token_num = models.IntegerField(verbose_name='token的个数',default=1)
 
     REQUIRED_FIELDS = ['sentence','token','finished_times']
 

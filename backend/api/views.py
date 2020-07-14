@@ -12,6 +12,8 @@ import random
 from voice2word_baidu.get_word import Converter
 from tools.file_mover import FileHandler
 from algorithm.edit_distance import get_similarity
+from token_baidu.get_token import get_tokens,get_no_sign_tokens,punctuation_replace
+import xlrd
 
 app_id = "wxfbbdf46e1f2546ef"
 app_secret = "f71231c7013b49a9bdb1f60136dcbba5"
@@ -216,6 +218,29 @@ class InternalContextView(APIView):#############################################
 
 
 class ContextView(APIView):
+    def get_recommend_contexts(self):
+        DEFAULT_NUM = 10 # 默认推荐数目
+
+        if Context.objects.count() < DEFAULT_NUM:
+            return Context.objects.all()
+        # 通过遍历计算,得到每个句子中没被覆盖的token个数
+        queryset = Context.objects.all()
+        no_cover_nums = []
+        for context in queryset:
+            tks = context.token.split('|')
+            num = len(tks)
+            for tk in tks:
+                obj = Token.objects.filter(token=tk).first()
+                if obj.finish_times != 0:
+                    num=num-1
+            no_cover_nums += [num]
+        sorted_data_tuples = sorted(enumerate(no_cover_nums), key=lambda x:-x[1])
+        aim_datas = sorted_data_tuples[:DEFAULT_NUM]
+        indexs = [data[0] for data in aim_datas]
+        ids = [queryset[idx].token for idx in indexs]
+        new_queryset = Context.objects.filter(pk__in=ids)
+        return new_queryset
+
     def get_recommended_contexts(self): ################################待修改
         MAX = 20
         MAX_WILLFINISH = 5
@@ -256,10 +281,10 @@ class ContextView(APIView):
             return queryset
 
     def get(self, request, *args, **kwargs):
-        ''' 新的post函数，根据某些算法，找出50条句子发送给前端 '''
+        ''' 新的post函数，根据某些算法，找出10条句子发送给前端 '''
         pk = kwargs.get('pk')
         if not pk:
-            contexts = self.get_recommended_contexts()
+            contexts = self.get_recommend_contexts()
             serializer = ContextSerializer(instance=contexts, many=True)
             return Response(serializer.data)
         else:
@@ -361,7 +386,6 @@ class VoiceView(APIView):
         default_filename = 'tmp'
         default_ext = '.mp3'
         api_ext = '.pcm'
-        SCORE_PER_CONTEXT = 100
         dir = os.path.join(settings.BASE_DIR, 'voices/')
 
         dst_dir = os.path.join(settings.BASE_DIR, 'voice_store/')
@@ -388,13 +412,14 @@ class VoiceView(APIView):
         converter = Converter()
         words_from_voice = converter.get_words(dir+default_filename+default_ext)[0]
         print('words_from_voice: ',words_from_voice)
-        # 根据用户cid获取文本
+        # 根据cid获取文本
         context = Context.objects.filter(cid=cid).first()
         words_from_context = context.sentence
         print('words_from_context: ',words_from_context)
         min_rate = context.threshold_value / 100  # 设定的阈值
         print('min_rate: ',min_rate)
         rate = self.get_rate(words_from_context,words_from_voice)  # 匹配率
+        print('得分为:',rate)
         # print('required_times: ',required_times)
         # if required_times <= 0:
         #     # 删除本地文件 --- 暂时不用删了
@@ -421,7 +446,16 @@ class VoiceView(APIView):
         task_finsh = TaskFinish(user_id=wx_number,context_id=cid,quality=math.floor(100*rate))
         # 增加用户的积分
         ######
-        user.score = user.score+math.floor(SCORE_PER_CONTEXT*rate)
+        user.score = user.score+math.floor(context.base_score*rate)
+        ######
+        # 保存token
+        tokens = get_no_sign_tokens(words_from_voice)
+        for tk in tokens:
+            objs = Token.objects.filter(token=tk)
+            if len(objs) > 0:
+                obj = objs.first()
+                obj.finish_times = obj.finish_times + 1
+                obj.save()
         # 保存
         ######
         user.save()
@@ -463,17 +497,42 @@ class ReleaseContextViewSet(ModelViewSet):
     serializer_class = FileSerializer
 
     def write_file_to_db(self,filename):
-        f = open(filename,'r')
-        if not f:
+        # filename = settings.BASE_DIR + '/temp/task.xlsx'
+        # 打开工作表
+        workbook = xlrd.open_workbook(filename=filename)
+        # 用索引取第一个工作薄
+        booksheet = workbook.sheet_by_index(0)
+        # 返回的结果集
+        try:
+            for i in range(booksheet.nrows):
+                list = booksheet.row_values(i)
+                token_num = len(list)
+                sentence = list[0]
+                base_score = list[1]
+                threshold_value = list[2]
+                tokens = get_no_sign_tokens(sentence)
+                context_token = ''
+                for tk in tokens:
+                    context_token+=tk+'|'
+                    obj = Token.objects.filter(token='aaa')
+                    if len(obj) == 0:
+                        # 数据库中没有此token，加入
+                        new_token = Token(token=tk)
+                        new_token.save()
+                context_token=context_token[0:-1]
+                cobj = Context.objects.filter(sentence=sentence)
+                if len(cobj)==0:
+                    context = Context(sentence=sentence, base_score=base_score, threshold_value=threshold_value,
+                                  token=context_token,token_num=token_num)
+                    context.save()
+            return True
+        except Exception as e:
             return False
-
-
-
 
     def create(self, request, *args, **kwargs):
         TEMP_DIR = os.path.join(settings.BASE_DIR, 'temp/')
         default_filename = 'task'
-        default_ext = '.txt'
+        default_ext = '.xlsx'
         file = request.FILES.get("file", None)
         if not file:
             print('接收文件失败.')
@@ -486,9 +545,12 @@ class ReleaseContextViewSet(ModelViewSet):
             destination.write(chunk)
         destination.close()
         local_path = os.path.join(TEMP_DIR, default_filename + default_ext)
-        self.write_file_to_db(local_path)
-        print('文件下载完成')
-        return Response({'StatusCode': 'success'})
+        save_res = self.write_file_to_db(local_path)
+        if save_res:
+            print('文件下载完成')
+            return Response({'StatusCode': 'success'})
+        else:
+            return Response({'StatusCode': 'fail'})
 
 
 

@@ -1,1 +1,0 @@
-<view class="content"><image class="bg-set" src="../../static/image/LoginBG.png"></image><view class="takePlaceView"></view><button class="loginBtn" type="primary" open-type="getUserInfo" withCredentials="true" data-event-opts="{{[['getuserinfo',[['getuserinfo',['$event']]]]]}}" bindgetuserinfo="__e">微信登录</button></view>
