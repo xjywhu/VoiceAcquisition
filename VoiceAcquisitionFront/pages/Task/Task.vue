@@ -4,10 +4,8 @@
 		<uni-search-bar @confirm="search" @input="input" ></uni-search-bar>
 		<view class="content">
 			<view class="uni-list">
-				<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" :data-newsid="item.cid">
+				<view class="uni-list-cell" @tap="toSpeech" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" :data-cid="item.cid" :data-sentence="item.sentence">
 					<uni-card
-						
-						@click="toSpeech"
 						mode="basic" 
 						:is-shadow="true" 
 						note="金额:100"
@@ -15,7 +13,6 @@
 					>
 					{{item.sentence}}
 					</uni-card>
-					
 				</view>
 			</view>
 		</view>	
@@ -55,9 +52,11 @@
 			});
 		},
 		methods: {
-			toSpeech(){
+			toSpeech(e){
+				var cid = e.currentTarget.dataset.cid;
+				var sentence = e.currentTarget.dataset.sentence;
 				uni.navigateTo({
-					url: '/pages/Speech/Speech',
+					url: '/pages/Speech/Speech?cid='+cid+'&sentence='+sentence,
 				});
 			}
 		},
