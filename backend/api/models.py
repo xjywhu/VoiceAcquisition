@@ -55,6 +55,7 @@ class Context(models.Model):
     sentence = models.CharField(max_length=100, verbose_name='内容')
     token = models.CharField(verbose_name='分词',max_length=200)
     finished_times = models.IntegerField(verbose_name='完成次数',default=0)
+    base_score = models.IntegerField(verbose_name='最高积分',default=100)
     threshold_value = models.IntegerField(default=90,verbose_name='阈值')
 
     REQUIRED_FIELDS = ['sentence','token','finished_times']
