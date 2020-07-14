@@ -57,7 +57,7 @@ class Context(models.Model):
     finished_times = models.IntegerField(verbose_name='完成次数',default=0)
     threshold_value = models.IntegerField(default=90,verbose_name='阈值')
 
-    REQUIRED_FIELDS = ['sentence','token_baidu','finished_times']
+    REQUIRED_FIELDS = ['sentence','token','finished_times']
 
 class TaskFinish(models.Model):
     uid = models.IntegerField(verbose_name='id',primary_key=True,auto_created=True)
@@ -74,10 +74,10 @@ class FileModel(models.Model):
     file = models.FileField(upload_to='temp',max_length=200)
 
 
-class Token:
-    token_id = models.IntegerField(verbose_name='id',primary_key=True,auto_created=True)
-    token = models.CharField(verbose_name='tokens',max_length=30)
-    finish_times = models.IntegerField(verbose_name='完成次数',default=0)
+class Token(models.Model):
+    token = models.CharField(primary_key=True,verbose_name='token',max_length=30)
+    finish_times = models.IntegerField(verbose_name='完成次数', default=0)
+
 
 
 

@@ -462,6 +462,14 @@ class ReleaseContextViewSet(ModelViewSet):
     queryset = FileModel.objects.all()
     serializer_class = FileSerializer
 
+    def write_file_to_db(self,filename):
+        f = open(filename,'r')
+        if not f:
+            return False
+
+
+
+
     def create(self, request, *args, **kwargs):
         TEMP_DIR = os.path.join(settings.BASE_DIR, 'temp/')
         default_filename = 'task'
@@ -477,6 +485,8 @@ class ReleaseContextViewSet(ModelViewSet):
         for chunk in file.chunks():
             destination.write(chunk)
         destination.close()
+        local_path = os.path.join(TEMP_DIR, default_filename + default_ext)
+        self.write_file_to_db(local_path)
         print('文件下载完成')
         return Response({'StatusCode': 'success'})
 
