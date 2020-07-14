@@ -12,6 +12,8 @@ import random
 from voice2word_baidu.get_word import Converter
 from tools.file_mover import FileHandler
 from algorithm.edit_distance import get_similarity
+from token_baidu.get_token import get_tokens
+import xlrd
 
 app_id = "wxfbbdf46e1f2546ef"
 app_secret = "f71231c7013b49a9bdb1f60136dcbba5"
@@ -361,7 +363,6 @@ class VoiceView(APIView):
         default_filename = 'tmp'
         default_ext = '.mp3'
         api_ext = '.pcm'
-        SCORE_PER_CONTEXT = 100
         dir = os.path.join(settings.BASE_DIR, 'voices/')
 
         dst_dir = os.path.join(settings.BASE_DIR, 'voice_store/')
@@ -388,7 +389,7 @@ class VoiceView(APIView):
         converter = Converter()
         words_from_voice = converter.get_words(dir+default_filename+default_ext)[0]
         print('words_from_voice: ',words_from_voice)
-        # 根据用户cid获取文本
+        # 根据cid获取文本
         context = Context.objects.filter(cid=cid).first()
         words_from_context = context.sentence
         print('words_from_context: ',words_from_context)
@@ -421,7 +422,7 @@ class VoiceView(APIView):
         task_finsh = TaskFinish(user_id=wx_number,context_id=cid,quality=math.floor(100*rate))
         # 增加用户的积分
         ######
-        user.score = user.score+math.floor(SCORE_PER_CONTEXT*rate)
+        user.score = user.score+math.floor(context.base_score*rate)
         # 保存
         ######
         user.save()
@@ -463,17 +464,34 @@ class ReleaseContextViewSet(ModelViewSet):
     serializer_class = FileSerializer
 
     def write_file_to_db(self,filename):
-        f = open(filename,'r')
-        if not f:
-            return False
-
-
-
+        # filename = settings.BASE_DIR + '/temp/task.xlsx'
+        # 打开工作表
+        workbook = xlrd.open_workbook(filename=filename)
+        # 用索引取第一个工作薄
+        booksheet = workbook.sheet_by_index(0)
+        # 返回的结果集
+        for i in range(booksheet.nrows):
+            list = booksheet.row_values(i)
+            sentence = list[0]
+            base_score = list[1]
+            threshold_value = list[2]
+            tokens = get_tokens(sentence)
+            context_token = ''
+            for tk in tokens:
+                context_token+=tk+'|'
+                obj = Token.objects.filter(token='aaa')
+                if len(obj) == 0:
+                    # 数据库中没有此token，加入
+                    new_token = Token(token=tk)
+                    new_token.save()
+            context_token=context_token[0:-1]
+            context = Context(sentence=sentence,base_score=base_score,threshold_value=threshold_value,token=context_token)
+            context.save()
 
     def create(self, request, *args, **kwargs):
         TEMP_DIR = os.path.join(settings.BASE_DIR, 'temp/')
         default_filename = 'task'
-        default_ext = '.txt'
+        default_ext = '.xlsx'
         file = request.FILES.get("file", None)
         if not file:
             print('接收文件失败.')
