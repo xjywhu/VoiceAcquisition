@@ -9,37 +9,8 @@
 	        mSlideList
 	    },
 		data() {
-		            return {
-		                list : [
-		                    {
-		                        id: 1,
-		                        image: '',
-		                        title: '张三',
-		                        rightDetail: '2019-03-18',
-		                        detail: 'XXXXXXXXXXXXXXXXXXX公司',
-		                        slide_x: 0
-		                    },
-		                    {
-		                        id: 2,
-		                        surname: '李',
-		                        title: '李二',
-		                        rightDetail: '2019-03-17',
-		                        detail: 'XXXXXXXXXXXXXXXXXXX公司',
-		                        slide_x: 0
-		                    },
-		                    {
-		                        id: 3,
-		                        title: '王五',
-		                        rightDetail: '2019-03-18',
-		                        slide_x: 0
-		                    },
-		                    {
-		                        id: 4,
-		                        surname: '李',
-		                        detail: 'XXXXXXXXXXXXXXXXXXX公司',
-		                        slide_x: 0
-		                    }
-		                ],
+			return {
+		        list : [],
 		                buttonList: [
 		                    {
 		                        title: '分享',
@@ -51,38 +22,40 @@
 		                    }
 		                ]
 		            };
-		        },
-				
-		        methods: {
-					onLoad:function(){
-						uni.showLoading({
-							title:"加载中...."
-						})
-						uni.request({
-							//url: global.base_url+'task_finish/'+global.user_data.wx_number+'/',
-							url: global.base_url+'task_finish/oVCRb5GmyJlyChS90erPLg-Jlz6c/',
-							method: 'GET',
-							data: {},
-							success: res => {
-								console.log(res.data);
-								//console.log(res.data[0].description);
-								this.tasks = res.data;
-								uni.hideLoading();
-							},
-							fail: () => {},
-							complete: () => { console.log(url);}
-						});
+		},
+		methods: {  
+			onLoad:function(){
+				uni.showLoading({
+					title:"加载中...."
+				})
+				uni.request({
+					//url: global.base_url+'task_finish/'+global.user_data.wx_number+'/',
+					//global.base_url+'task_finish/oVCRb5GmyJlyChS90erPLg-Jlz6c/',
+					url: global.base_url+'task_finish/',
+					method: 'GET',
+					data: {},
+					success: res => {
+						for (var i=0;i < res.data.length;i++)
+						{
+							var dic =  { "id":res.data[i].context.cid, "detail":res.data[i].context.sentence, 
+							"surname":res.data[i].quality, "slide_x":1,rightDetail:res.data[i].context.finished_times};
+							console.log(dic);
+							this.list.push(dic);
+						}
+						uni.hideLoading();
 					},
-		            changeMethod(data, button, index){
-		                console.log('滑动按钮回调', data)
-		                console.log('滑动按钮回调', button)
-		            },
-		            clickMethod(data){
-		                console.log('点击行回调', data)
-		            }
-		        }
-		
-		
+					fail: () => {},
+					complete: () => {}
+				});
+			},
+		    changeMethod(data, button, index){
+		        console.log('滑动按钮回调', data)
+		        console.log('滑动按钮回调', button)
+		    },
+		    clickMethod(data){
+		        console.log('点击行回调', data)
+		    }
+		}
 	}
 </script>
 

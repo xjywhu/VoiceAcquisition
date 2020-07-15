@@ -87,7 +87,8 @@
 			}
 		},
 		methods: {
-			onClick() {
+			onClick(e) {
+				console.log(e.currentTarget.dataset)
 				this.$emit('click')
 			}
 		}
