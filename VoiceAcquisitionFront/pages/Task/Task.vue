@@ -51,7 +51,7 @@
 				complete: () => {}
 			});
 		},
-		methods: {
+		methods: { 
 			toSpeech(e){
 				var cid = e.currentTarget.dataset.cid;
 				var sentence = e.currentTarget.dataset.sentence;
