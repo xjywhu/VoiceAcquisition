@@ -20,3 +20,13 @@ def get_similarity(str1,str2):
     maxlen = max(len(str1),len(str2))
     ret = 1 - distance/maxlen
     return ret
+
+
+def test_edit_distance(str1,str2):
+    matrix = [[i+j for j in range(len(str2) + 1)] for i in range(len(str1) + 1)]
+    print(matrix)
+    # matrix[0][0] = 0
+    # for i in range(1, len(str1) + 1):
+    #     for j in range(1, len(str2) + 1):
+    #         pass
+
