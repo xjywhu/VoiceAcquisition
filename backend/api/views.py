@@ -11,7 +11,7 @@ from django.db.models import Q
 import random
 from voice2word_baidu.get_word import Converter
 from tools.file_mover import FileHandler
-from algorithm.edit_distance import get_similarity
+from algorithm.edit_distance import get_similarity,extended_edit_distance
 from token_baidu.get_token import get_tokens,get_no_sign_tokens,punctuation_replace
 import xlrd
 
@@ -418,7 +418,10 @@ class VoiceView(APIView):
         print('words_from_context: ',words_from_context)
         min_rate = context.threshold_value / 100  # 设定的阈值
         print('min_rate: ',min_rate)
-        rate = self.get_rate(words_from_context,words_from_voice)  # 匹配率
+        ################################ 计算得分和高亮显示数据
+        words_from_context_no_pun = punctuation_replace(words_from_context)
+        words_from_voice_no_pun = punctuation_replace(words_from_voice)
+        rate, a, b = extended_edit_distance(words_from_voice_no_pun, words_from_context_no_pun) # 第二个参数是正确的字符串
         print('得分为:',rate)
         # print('required_times: ',required_times)
         # if required_times <= 0:
@@ -432,7 +435,13 @@ class VoiceView(APIView):
         user.save()
         if rate < min_rate:
             # 删除本地文件 --- 暂时不用删了
-            return Response({'StatusCode':'fail','failReason':'匹配度未达到阈值'})
+            return Response({
+                'StatusCode':'fail',
+                'failReason':'匹配度未达到阈值',
+                'voice_text':words_from_voice,
+                'context_text':words_from_context,
+                'a':a,
+                'b':b})
         # 匹配度达到
         # 修改wx_number的用户的 success_times字段，让其加1
         #######
@@ -487,7 +496,12 @@ class VoiceView(APIView):
         handler = FileHandler(move_from_dir,move_to_dir)
         handler.moveFile(src_filename,dst_filename)
         print('成功移动文件')
-        return Response({'StatusCode': 'success'})
+        return Response({
+            'StatusCode': 'success',
+            'voice_text': words_from_voice,
+            'context_text': words_from_context,
+            'a': a,
+            'b': b })
 
 class ReleaseContextViewSet(ModelViewSet):
 

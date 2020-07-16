@@ -36,7 +36,36 @@ import jieba
 
 
 #####################
-from algorithm.edit_distance import test_edit_distance
-str1 = 'aaaaa'
-str2 = 'aaaab'
-test_edit_distance(str1,str2)
+from algorithm.edit_distance import test_edit_distance,extended_edit_distance
+# str1 = 'batyu'#'zabcd'#'batyu' # 写在左边的
+# str2 = 'beauty'#'abcde'#'beauty' # 写在上边的
+# rate,a,b ,matrix, id_matrix= extended_edit_distance(str1,str2)
+# for row in matrix:
+#     print(row)
+#
+# print('\n')
+# for row in id_matrix:
+#     print(row)
+#
+# row = len(id_matrix)
+# col = len(id_matrix[0])
+# lis = []
+# i = row - 1
+# j = col - 1
+# while i!=0 and j!=0:
+#     lis += [(i, j)]
+#     cell = id_matrix[i][j]
+#     i = cell[0]
+#     j = cell[1]
+#
+#
+# lis += [(i,j)]
+# lis.reverse()
+#
+# print(lis)
+# print('a:', a)
+# print('b:', b)
+##################
+# c1=(1,2)
+# c2 =(2,3)
+# print(c2-c1)
