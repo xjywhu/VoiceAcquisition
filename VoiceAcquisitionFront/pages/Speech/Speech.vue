@@ -8,8 +8,18 @@
 		>
 		{{sentence}}
 		</uni-card>
-		
-        <page-head :title="title"></page-head>
+        	<aui-dialog 
+        	    ref="dialog"
+        	    :title="auiDialog.title"
+        	    :msg="auiDialog.msg"
+        	    :btns="auiDialog.btns"
+        	    :mask="auiDialog.mask"
+        	    :maskTapClose="auiDialog.maskTapClose"
+        	    :items="auiDialog.items"
+        	    :theme="auiDialog.theme"
+        	    @callback="dialogCallback"
+        	></aui-dialog>
+		<page-head :title="title"></page-head>
         <view class="uni-padding-wrap">
             <block v-if="!recording && !playing && !hasRecord">
                 <view class="page-body-time">
@@ -73,12 +83,17 @@
 	// #ifdef APP-PLUS
 	import permision from "@/common/permission.js"
 	// #endif
+	import {aui} from '@/common/aui/js/aui.js';
+	import auiDialog from '@/components/aui-dialog/aui-dialog.vue';
     var util = require('../../common/util.js')
     var playTimeInterval = null;
     var recordTimeInterval = null;
     var recorderManager = null;
     var music = null;
     export default {
+		components: {
+			auiDialog
+		},
         data() {
             return {
 				cid:"",
@@ -91,7 +106,16 @@
                 recordTime: 0,
                 playTime: 0,
                 formatedRecordTime: '00:00:00', //录音的总时间
-                formatedPlayTime: '00:00:00' //播放录音的当前时间
+                formatedPlayTime: '00:00:00' ,//播放录音的当前时间
+				auiDialog: {
+					title: '',
+					msg: '',
+					btns: [{name: '确定'}],
+					mask: true,
+					maskTapClose: true,
+					items: [],
+					theme: 1,
+				}
             }
         },
         onUnload: function() {
@@ -125,31 +149,39 @@
                 this.hasRecord = true;
                 this.recording = false;
 				console.log(res.tempFilePath);
-				// wx.uploadFile({
-				// 	url: global.base_url+"voices_info/"+e.cid+"/"+global.user_data.wx_number,
-				// 	filePath: res.tempFilePath,
-				// 	name:"voice_file",
-				// 	header: {
-				// 		"Content-Type": "multipart/form-data",
-				// 	},
-				// 	formData:{
-				// 		name:"voice_file",
-				// 	},
-				// 	success: res => {
-				// 		console.log(res)
-				// 	},
-				// 	fail: res=>{
-				// 		console.log(res)
-				// 		console.log("上传失败")
-				// 	},
-				// })
-				
             });
             recorderManager.onError(() => {
                 console.log('recorder onError');
             });
         },
         methods: {
+			//dialog弹窗底部按钮回调
+			dialogCallback(e){
+				var _this = this;
+				//console.log(e);             
+				if(_this.$refs.dialog.getVal().length > 0)
+				{ //prompt输入框——点击确定时弹出输入内容
+					_this.auiDialog.title = '提示';
+					_this.$refs.dialog.getVal().forEach(function(item, index){
+					_this.auiDialog.msg += '<div style="display: flex;">' + item.label + '：' + item.value + '</div>';
+					});
+					_this.auiDialog.btns = [{name: '确定', color: '#197DE0'}];
+					_this.auiDialog.items = [];
+					_this.auiDialog.theme = 1;
+					_this.$refs.dialog.show();
+				}
+			},
+			alert(theme,title,msg){
+				var _this = this;
+				_this.auiDialog.title = title;
+				_this.auiDialog.msg = msg;
+				_this.auiDialog.btns = [{name: '确定', color: '#197DE0'}];
+				_this.auiDialog.items = [{label: '原始文本：', type: 'text', value: this.sentence},
+				{label: '录音文本：', type: 'text', value: 'hhh'}
+				];
+				_this.auiDialog.theme = theme;
+				_this.$refs.dialog.show();
+			},
             async startRecord() { //开始录音
                 // #ifdef APP-PLUS
                 let status = await this.checkPermission();
@@ -203,13 +235,15 @@
 						name:"voice_file",
 					},
 					success: res => {
-						console.log(res)
+						console.log(res);
+						
 					},
 					fail: res=>{
 						console.log(res)
 						console.log("上传失败")
 					},
-				})
+				});
+				this.alert(1,"上传成功","准确率:90%");
 				this.end();
 			},
             clear() {
