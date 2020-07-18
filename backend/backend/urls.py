@@ -30,7 +30,7 @@ API_V1 = [
     url(r'^task_finish/$',TaskFinishView.as_view(),name='task_finish'), # 获取所有的任务完成情况，客户端应该用不上
     url(r'^task_finish/(?P<cid>\d+)/(?P<wx_number>.*)',TaskFinishView.as_view(),name='task_finish'),#根据用户id和cid获取完成情况
     url(r'^task_finish/(?P<wx_number>.*)$',TaskFinishView.as_view(),name='task_finish'), # 获取某人完成任务的情况
-
+    url(r'^auto_login/(?P<jwt>.*)$',AutoLoginView.as_view(), name='auto_login'), # 自动登录接口
     #url(r'^context_info/(?P<cid>\d+)/(?P<context>.*)$',ContextView.as_view(),name='context_info'),# 修改某一句子、删除某一句子
     url(r'^images/(?P<wx_number>.*)$', ImageView.as_view(), name='images'), # 获得图片
     url(r'^openid/(?P<code>.*)$',OpenIdView.as_view(),name='openid'),

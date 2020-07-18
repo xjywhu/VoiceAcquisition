@@ -69,3 +69,19 @@ from algorithm.edit_distance import test_edit_distance,extended_edit_distance
 # c1=(1,2)
 # c2 =(2,3)
 # print(c2-c1)
+
+
+###################
+from my_jwt.jwt_handler import create_token,verify_token
+import time
+token = create_token("oVCRb5GmyJlyChS90erPLg-Jlz6c", 1)
+# print(token)
+# token = token[:44]+'A'+token[45:]
+
+# time.sleep(2)
+# 等待2s后再次验证token，因超时将导致验证失败
+flag, info = verify_token(token)
+if flag:
+    wx = info['wx_number']
+    print(wx)
+#print(info)
