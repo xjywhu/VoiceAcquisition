@@ -34,7 +34,7 @@ class Task_ContextViewSet(ModelViewSet):
     serializer_class = ContextSerializer
 
 
-class UserView(APIView):
+class InternalUserView(APIView):
     def post(self,request,*args,**kwargs):
         # 增加用户
         serializer = UserSerializer(data=request.data)
@@ -48,34 +48,10 @@ class UserView(APIView):
         pk = kwargs.get('pk')
         if not pk:
             # 删除失败
-            return Response({'StatusCode':'fail','failReason':'未在url中加入对应的wx_number'})
+            return Response({'StatusCode':'fail','failType':'requestParaFail','failReason':'未在url中加入对应的wx_number'})
         else:
             User.objects.filter(wx_number=pk).delete()
             return Response({'StatusCode':'success'})
-
-    def put(self,request,*args,**kwargs):
-        '''更新'''
-        pk = kwargs.get('pk')
-        if not pk:
-            # id错误
-            print('获取pk失败')
-            return Response({'StatusCode':'fail','failReason':'未在url中加入对应的wx_number'})
-        else:
-            # user = User.objects.filter(wx_number=pk).first()
-            print('pk=',pk)
-            res = User.objects.get_or_create(wx_number=pk)
-            user = res[0]
-            isCreated = res[1]
-            if isCreated:
-                # 创建
-                print('是创建的')
-            print(request.data)
-            serializer = UserSerializer(instance=user, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            else:
-                return Response(serializer.errors)
 
     def get(self,request,*args,**kwargs):
         pk = kwargs.get('pk')
@@ -90,6 +66,52 @@ class UserView(APIView):
             user = User.objects.filter(wx_number=pk).first()
             serializer = UserSerializer(instance=user, many=False)
             return Response(serializer.data)
+
+
+class UserView(APIView):
+    def get(self,request,*args,**kwargs):
+        jwt = kwargs.get('jwt')
+        if not jwt:
+            # id错误
+            print('获取jwt失败')
+            return Response({'StatusCode': 'fail', 'failType': 'requestParaFail', 'failReason': '未在url中加入对应的jwt'})
+        else:
+            print('jwt=', jwt)
+            flag, info = verify_token(jwt)
+            if not flag:
+                return Response({'StatusCode': 'fail', 'failType': 'jwtFail', 'failReason': info})
+            wx = info['wx_number']
+            user = User.objects.filter(wx_number=wx).first()
+            serializer = UserSerializer(instance=user, many=False)
+            return Response({'StatusCode': 'success', 'data': serializer.data})
+
+    def put(self,request,*args,**kwargs):
+        '''更新'''
+        jwt = kwargs.get('jwt')
+        if not jwt:
+            # id错误
+            print('获取jwt失败')
+            return Response({'StatusCode':'fail','failType':'requestParaFail','failReason':'未在url中加入对应的jwt'})
+        else:
+            # user = User.objects.filter(wx_number=pk).first()
+            print('jwt=',jwt)
+            flag, info = verify_token(jwt)
+            if not flag:
+                return Response({'StatusCode':'fail','failType':'jwtFail','failReason':info})
+            wx = info['wx_number']
+            res = User.objects.get_or_create(wx_number=wx)
+            user = res[0]
+            isCreated = res[1]
+            if isCreated:
+                # 创建
+                print('是创建的')
+            print(request.data)
+            serializer = UserSerializer(instance=user, data=request.data)
+            if serializer.is_valid(): # {'StatusCode': 'success', 'data': serializer.data}
+                serializer.save()
+                return Response({'StatusCode': 'success', 'data': serializer.data})
+            else:
+                return Response({'StatusCode': 'fail','failType':'serializerFail','failReason':serializer.errors})
 
 
 class TaskView(APIView):
@@ -284,19 +306,24 @@ class ContextView(APIView):
     def get(self, request, *args, **kwargs):
         ''' 新的post函数，根据某些算法，找出10条句子发送给前端 '''
         pk = kwargs.get('pk')
+        jwt = kwargs.get('jwt')
+        if not jwt:
+            return Response({'StatusCode':'fail','failType':'requestParaFail','failReason':'未在url中加入对应的jwt'})
+        flag, info = verify_token(jwt)
+        if not flag:
+            return Response({'StatusCode':'fail','failType':'jwtFail','failReason':info})
         if not pk:
             contexts = self.get_recommend_contexts()
             serializer = ContextSerializer(instance=contexts, many=True)
-            return Response(serializer.data)
+            return Response({'StatusCode': 'success', 'data': serializer.data})
         else:
             # 获取某一cid对应的句子
             context = Context.objects.filter(cid=pk).first()
             serializer = ContextSerializer(instance=context, many=False)
-            return Response(serializer.data)
+            return Response({'StatusCode': 'success', 'data': serializer.data})
 
 
-class TaskFinishView(APIView):
-    # 根据cid和 wx_number获取对应的任务
+class InternalTaskFinishView(APIView):
     def get(self, request, *args, **kwargs):
         wx_number = kwargs.get('wx_number')
         cid = kwargs.get('cid')
@@ -313,6 +340,19 @@ class TaskFinishView(APIView):
             serializer = TaskFinishSerializer(instance=queryset, many=False)
             return Response(serializer.data)
 
+class TaskFinishView(APIView):
+    # 根据cid和 wx_number获取对应的任务
+    def get(self, request, *args, **kwargs):
+        jwt = kwargs.get('jwt')
+        if not jwt:
+            return Response({'StatusCode': 'fail', 'failType': 'requestParaFail', 'failReason': '未在url中加入对应的jwt'})
+        flag, info = verify_token(jwt)
+        if not flag:
+            return Response({'StatusCode': 'fail', 'failType': 'jwtFail', 'failReason': info})
+        wx = info['wx_number']
+        queryset = TaskFinish.objects.filter(user_id=wx)
+        serializer = TaskFinishSerializer(instance=queryset, many=True)
+        return Response({'StatusCode': 'success', 'data': serializer.data})
 
 
 class ImageView(APIView):
@@ -358,14 +398,12 @@ class OpenIdView(APIView):
             print('res.text = ',res.text)
             print('res.json() = ',res.json())
             js = res.json()
-            tk = create_token(js['openid'], 3600) # 时效一小时
+            tk = create_token(js['openid'], 3600*24*7) # 时效一小时
             js['jwt'] = tk
             # res['jwt'] = tk
-            return Response(js)
+            return Response({'StatusCode':'success','data':js})
         else:
-            return Response({'StatusCode':'fail','failReason':'未在url中获得code参数'})
-            #return Response('请传入code参数',status=400)
-            #return Response('请传入code参数')
+            return Response({'StatusCode':'fail','failType':'requestParaFail','failReason':'未在url中获得code参数'})
 
 class FileViewSet(ModelViewSet):
     queryset = FileModel.objects.all()
@@ -388,16 +426,19 @@ class VoiceView(APIView):
 
     def post(self, request, *args, **kwargs):
         cid = kwargs.get('cid')
-        wx_number = kwargs.get('wx_number')
+        jwt = kwargs.get('jwt')
+        if not cid or not jwt:
+            return Response({'StatusCode': 'fail', 'failType': 'requestParaFail', 'failReason': '未在url中加入对应的jwt或cid'})
+        flag, info = verify_token(jwt)
+        if not flag:
+            return Response({'StatusCode': 'fail', 'failType': 'jwtFail', 'failReason': info})
+        wx_number = info['wx_number']
         default_filename = 'tmp'
         default_ext = '.mp3'
         api_ext = '.pcm'
         dir = os.path.join(settings.BASE_DIR, 'voices/')
 
         dst_dir = os.path.join(settings.BASE_DIR, 'voice_store/')
-        if not cid or not wx_number: # url没有给出cid或wx_number
-            print('url中获取cid或wx_number失败')
-            return Response({'StatusCode':'fail','failReason':'url中获取cid或wx_number失败'})
 
         print('cid : ',cid)
         print('wx_number : ',wx_number)
@@ -406,7 +447,7 @@ class VoiceView(APIView):
         file = request.FILES.get("voice_file", None)
         if not file:
             print('接收文件失败.')
-            return Response({'StatusCode': 'fail', 'failReason': '接收文件失败'})
+            return Response({'StatusCode': 'fail','failType':'otherFail' ,'failReason': '接收文件失败'})
 
         # file接收到了,就存储文件为  default_filename + default_ext
         destination = open(os.path.join(dir, default_filename + default_ext),
@@ -443,11 +484,15 @@ class VoiceView(APIView):
             # 删除本地文件 --- 暂时不用删了
             return Response({
                 'StatusCode':'fail',
+                'failType':'otherFail',
                 'failReason':'匹配度未达到阈值',
-                'voice_text':words_from_voice,
-                'context_text':words_from_context,
-                'a':a,
-                'b':b})
+                'data':{
+                    'voice_text': words_from_voice,
+                    'context_text': words_from_context,
+                    'a': a,
+                    'b': b
+                    }
+                })
         # 匹配度达到
         # 修改wx_number的用户的 success_times字段，让其加1
         #######
@@ -504,10 +549,13 @@ class VoiceView(APIView):
         print('成功移动文件')
         return Response({
             'StatusCode': 'success',
-            'voice_text': words_from_voice,
-            'context_text': words_from_context,
-            'a': a,
-            'b': b })
+            'data':{
+                'voice_text': words_from_voice,
+                'context_text': words_from_context,
+                'a': a,
+                'b': b
+                }
+            })
 
 class ReleaseContextViewSet(ModelViewSet):
 
@@ -582,9 +630,11 @@ class AutoLoginView(APIView):
                 wx_number = info['wx_number']
                 user = User.objects.filter(wx_number=wx_number).first()
                 serializer = UserSerializer(instance=user, many=False)
-                return Response({'StatusCode': 'success', 'user_info': serializer.data})
+                newjwt = create_token(wx_number,3600*24*7)
+                return Response({'StatusCode': 'success', 'data': serializer.data,'newJWT':newjwt})
             else:
-                return Response({'StatusCode': 'fail','failReason':info})
+                return Response({'StatusCode': 'fail','failType':'jwtFail','failReason':info})
         else:
-            return Response({'StatusCode': 'fail','failReason':'未获得jwt'})
+            return Response({'StatusCode': 'fail','failType':'requestParaFail','failReason':'未获得jwt'})
+
 

@@ -41,9 +41,18 @@
 								success:function(res3){
 									//res3 里面有openid和session_key
 									//console.log(res3)
-									// console.log(res3.data)
-									var openid = res3.data.openid
-									var jwt = res.data.jwt
+									console.log('res3.data:')
+									console.log(res3.data)
+									var statusCode = res3.data.StatusCode
+									if(statusCode == 'fail'){ // 登录失败
+										uni.showToast({
+										    title: '登录失败，请稍后重试',
+										    icon:"none"
+										});
+										uni.navigateBack();
+									}
+									var openid = res3.data.data.openid
+									var jwt = res3.data.data.jwt
 									global.user_data.jwt = jwt
 									global.user_data.wx_number = openid
 									//console.log(global.user_data.wx_number)
@@ -76,7 +85,7 @@
 											image:global.user_data.avatarUrl
 										}
 										uni.request({
-											url:base_url+'user_info/'+data.wx_number,
+											url:base_url+'user_info/'+jwt,
 											data:data,
 											method:'PUT',
 											success: res => {
@@ -86,6 +95,10 @@
 											complete: () => {}
 										})
 									}
+									uni.setStorage({
+										key:'JWT',
+										data:jwt
+									})
 									uni.navigateBack();
 								}
 							});
@@ -94,7 +107,7 @@
 								title:"授权失败，请稍后重试",
 								icon:"none"
 							});
-							return false;
+							uni.navigateBack();
 						}
 					}
 				});

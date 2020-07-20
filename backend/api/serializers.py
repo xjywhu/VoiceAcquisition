@@ -5,7 +5,7 @@ from rest_framework import serializers
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('wx_number','nickName','score','native_place', 'image')
+        fields = ('wx_number','nickName','score','native_place', 'image','sex')
 
 class TaskSerializer(serializers.ModelSerializer):
     #id = serializers.IntegerField(source='tid')
