@@ -466,8 +466,8 @@ class VoiceView(APIView):
         min_rate = context.threshold_value / 100  # 设定的阈值
         print('min_rate: ',min_rate)
         ################################ 计算得分和高亮显示数据
-        words_from_context_no_pun = punctuation_replace(words_from_context)
-        words_from_voice_no_pun = punctuation_replace(words_from_voice)
+        words_from_context_no_pun , s1 = punctuation_replace(words_from_context)
+        words_from_voice_no_pun , s2 = punctuation_replace(words_from_voice)
         rate, a, b = extended_edit_distance(words_from_voice_no_pun, words_from_context_no_pun) # 第二个参数是正确的字符串
         print('得分为:',rate)
         # print('required_times: ',required_times)
@@ -490,7 +490,8 @@ class VoiceView(APIView):
                     'voice_text': words_from_voice,
                     'context_text': words_from_context,
                     'a': a,
-                    'b': b
+                    'b': b,
+					'rate': rate
                     }
                 })
         # 匹配度达到
@@ -553,7 +554,8 @@ class VoiceView(APIView):
                 'voice_text': words_from_voice,
                 'context_text': words_from_context,
                 'a': a,
-                'b': b
+                'b': b,
+				'rate': rate
                 }
             })
 
