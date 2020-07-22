@@ -4,8 +4,16 @@
 			title="阅读卡片" 
 			mode="basic" 
 			:is-shadow="true" 
-			note="Tips"
+			note="金额:100"
+			:threshold="'阈值:'+threshold"
 		>
+		
+<!-- 		<view class="uni-list">
+			<view class="uni-list-cell" hover-class="uni-list-cell-hover" v-for="(item,index) in sentence" :key="index">
+			item
+			</view>
+		</view> -->
+		
 		{{sentence}}
 		</uni-card>
         	<aui-dialog 
@@ -98,6 +106,8 @@
             return {
 				cid:"",
 				sentence:"",
+				voice_text:"",
+				threshold:"",
                 title: 'start/stopRecord、play/stopVoice',
                 recording: false, //录音中
                 playing: false, //播放中
@@ -124,6 +134,8 @@
         onLoad: function(e) {
 			this.cid = e.cid;
 			this.sentence = e.sentence; 
+			this.threshold = e.threshold;
+			console.log(e);
             music = uni.createInnerAudioContext();
             music.onEnded(() => {
                 clearInterval(playTimeInterval)
@@ -177,7 +189,7 @@
 				_this.auiDialog.msg = msg;
 				_this.auiDialog.btns = [{name: '确定', color: '#197DE0'}];
 				_this.auiDialog.items = [{label: '原始文本：', type: 'text', value: this.sentence},
-				{label: '录音文本：', type: 'text', value: 'hhh'}
+				{label: '录音文本：', type: 'text', value: this.voice_text}
 				];
 				_this.auiDialog.theme = theme;
 				_this.$refs.dialog.show();
@@ -225,7 +237,7 @@
             },
 			upload() {
 				wx.uploadFile({
-					url: global.base_url+"voices_info/"+this.cid+"/"+global.user_data.wx_number,
+					url: global.base_url+"voices_info/"+this.cid+"/"+global.user_data.jwt,
 					filePath: this.tempFilePath, 
 					name:"voice_file",
 					header: {
@@ -235,15 +247,23 @@
 						name:"voice_file",
 					},
 					success: res => {
-						console.log(res);
-						
+						//console.log(res);
+						var js = JSON.parse(res.data);
+						console.log(js["StatusCode"]);
+						var rate = js["data"]["rate"];
+						this.voice_text = js["data"]["voice_text"];
+						if(js["StatusCode"]=="fail")
+						{
+							this.alert(1,"上传失败","准确率:"+rate*100+"%");
+						}else{
+							this.alert(1,"上传成功","准确率:"+rate*100+"%");
+						}
 					},
 					fail: res=>{
 						console.log(res)
 						console.log("上传失败")
 					},
 				});
-				this.alert(1,"上传成功","准确率:90%");
 				this.end();
 			},
             clear() {

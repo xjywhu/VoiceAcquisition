@@ -4,7 +4,7 @@
 		<uni-search-bar @confirm="search" @input="input" ></uni-search-bar>
 		<view class="content">
 			<view class="uni-list">
-				<view class="uni-list-cell" @tap="toSpeech" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" :data-cid="item.cid" :data-sentence="item.sentence">
+				<view class="uni-list-cell" @tap="toSpeech" hover-class="uni-list-cell-hover" v-for="(item,index) in tasks" :key="index" :data-cid="item.cid" :data-sentence="item.sentence" :data-threshold_value="item.threshold_value">
 					<uni-card
 						mode="basic" 
 						:is-shadow="true" 
@@ -38,16 +38,16 @@
 				title:"加载中...."
 			})
 			uni.request({
-				url: base_url + 'context_info/',
+				url: base_url + 'context_info/'+global.user_data.jwt,
 				method: 'GET',
 				data: {},
 				success: res => {
-					console.log(res.data);
+					console.log(res.data.data);
 					//console.log(res.data[0].description);
-					this.tasks = res.data;
+					this.tasks = res.data.data;
 					uni.hideLoading();
-				},
-				fail: () => {},
+				}, 
+				fail: () => {console.log("fail.........");},
 				complete: () => {}
 			});
 		},
@@ -55,8 +55,10 @@
 			toSpeech(e){
 				var cid = e.currentTarget.dataset.cid;
 				var sentence = e.currentTarget.dataset.sentence;
+				var threshold = e.currentTarget.dataset.threshold_value;
+				//console.log(e.currentTarget.dataset);
 				uni.navigateTo({
-					url: '/pages/Speech/Speech?cid='+cid+'&sentence='+sentence,
+					url: '/pages/Speech/Speech?cid='+cid+'&sentence='+sentence+'&threshold='+threshold,
 				});
 			}
 		},

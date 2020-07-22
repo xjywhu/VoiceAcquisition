@@ -16,19 +16,30 @@
 	global.base_url = 'http://127.0.0.1:8000/api/v1/'
 	export default {
 		onLaunch: function() {
-			if ($api.getStorage('myJWT'))  { // 如果有值
-				uni.getStorage({
-					key:'myJWT',
-					success: (res) => {
-						global.user_data.jwt = res.data
-					}
-				})
+			console.log('App Launch')
+			// if ($api.getStorage('JWT'))  { // 如果有值
+			// 	uni.getStorage({
+			// 		key:'JWT',
+			// 		success: (res) => {
+			// 			global.user_data.jwt = res.data
+			// 			console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+			// 			//console.log(global.user_data.jwt)
+			// 		}
+			// 	})
+			// }
+			try {
+			    const value = uni.getStorageSync('JWT');
+			    if (value) {
+			        console.log(value);
+					global.user_data.jwt = value;
+			    }
+			} catch (e) {
+			    // error
 			}
 			// 尝试直接登录
 			if(global.user_data.jwt == null) return;
-			var base_url = "http://127.0.0.1:8000/api/v1/auto_login/";
 			uni.request({
-				url:base_url+global.user_data.jwt,
+				url:global.base_url+"auto_login/"+global.user_data.jwt,
 				method:'GET',
 				success: res => {
 					var statusCode = res.data.StatusCode
@@ -41,7 +52,8 @@
 					global.user_data.sex = data.sex
 					global.isLogin = true
 					// 刷新jwt，需要这个功能吗？
-					global.user_data.jwt = data.newJWT
+					//global.user_data.jwt = data.newJWT 
+					//console.log(data.newJWT)
 					uni.setStorage({
 						key:'JWT',
 						data:global.user_data.jwt
