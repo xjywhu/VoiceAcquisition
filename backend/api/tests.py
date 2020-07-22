@@ -37,6 +37,12 @@ import jieba
 
 #####################
 from algorithm.edit_distance import test_edit_distance,extended_edit_distance
+str1 = '今天天气怎么样'
+str2 = '今天天气怎么样?'
+s1_no_pun,s1 = punctuation_replace(str1)
+s2_no_pun,s2 = punctuation_replace(str2)
+rate,a,b = extended_edit_distance(str2,str1)
+print(rate)
 # str1 = 'batyu'#'zabcd'#'batyu' # 写在左边的
 # str2 = 'beauty'#'abcde'#'beauty' # 写在上边的
 # rate,a,b ,matrix, id_matrix= extended_edit_distance(str1,str2)
@@ -71,17 +77,17 @@ from algorithm.edit_distance import test_edit_distance,extended_edit_distance
 # print(c2-c1)
 
 
-###################
-from my_jwt.jwt_handler import create_token,verify_token
-import time
-token = create_token("oVCRb5GmyJlyChS90erPLg-Jlz6c", 1)
-# print(token)
-# token = token[:44]+'A'+token[45:]
-
-# time.sleep(2)
-# 等待2s后再次验证token，因超时将导致验证失败
-flag, info = verify_token(token)
-if flag:
-    wx = info['wx_number']
-    print(wx)
-#print(info)
+################### JWT
+# from my_jwt.jwt_handler import create_token,verify_token
+# import time
+# token = create_token("oVCRb5GmyJlyChS90erPLg-Jlz6c", 1)
+# # print(token)
+# # token = token[:44]+'A'+token[45:]
+#
+# # time.sleep(2)
+# # 等待2s后再次验证token，因超时将导致验证失败
+# flag, info = verify_token(token)
+# if flag:
+#     wx = info['wx_number']
+#     print(wx)
+# #print(info)
