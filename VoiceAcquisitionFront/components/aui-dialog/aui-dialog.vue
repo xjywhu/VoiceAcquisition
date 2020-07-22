@@ -13,9 +13,13 @@
 			<view class="aui-dialog-content" v-if="items.length > 0">
 				<view class="aui-dialog-input-list" v-for="(item, index) in items" :key="index" :data-index="index">
 					<view class="aui-dialog-input-label" v-if="item.label">{{item.label}}</view>
-					<view class="aui-dialog-input-list-input">
-						<input :type="item.type ? item.type : 'text'" :value="item.value" :data-index="index"  @input="_onInput" :placeholder="item.placeholder" />
-					</view>
+<!-- 					<view class="aui-dialog-input-list-input"> -->
+						<view v-for="(content,id) in item.value" :key="index" style="float:left;">
+						  <div v-if="content.type === 1" style='color:red;'><text decode="true" space="true">{{content.text}}</text></div>
+						  <div v-else><text>{{content.text}}</text></div>
+						</view>
+						<!-- <input :type="item.type ? item.type : 'text'" :value="item.value" :data-index="index"  @input="_onInput" :placeholder="item.placeholder" /> -->
+<!-- 					</view> -->
 				</view>
 			</view>
 			<view class="aui-dialog-down">

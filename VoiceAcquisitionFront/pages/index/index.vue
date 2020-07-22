@@ -1,5 +1,7 @@
 <template>
+	<view>
        <m-slide-list :data="list" :button="buttonList" :border="true" @click="clickMethod" @change="changeMethod"></m-slide-list>
+	</view>
 </template>
 
 <script>
@@ -21,9 +23,9 @@
 		                        background: '#ff3b32'
 		                    }
 		                ]
-		            };
+		    };
 		},
-		methods: {  
+		methods: {
 			onLoad:function(){
 				uni.showLoading({
 					title:"加载中...."
@@ -55,11 +57,56 @@
 		    },
 		    clickMethod(data){
 		        console.log('点击行回调', data)
-		    }
+		    },
+			sliceStr:function (str, len) {
+			  var len = len || 8;
+			  if (str != null) {
+			    if (str.length > len) {
+			      return str.substring(0, len) + "...";
+			    } else {
+			      return str;
+			    }
+			  }
+			  return '';
+			},
+			
+			myReplace:function (content) {
+			  content = content.replace(" ", "&nbsp;");
+			  if (content.indexOf(" ") != -1) {
+			    return myReplace(content);
+			  }
+			
+			  return content;
+			}
+
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
+   .userinfo {
+     display: flex;
+     flex-direction: column;
+     align-items: center;
+   }
    
+   .userinfo-avatar {
+     width: 128rpx;
+     height: 128rpx;
+     margin: 20rpx;
+     border-radius: 50%;
+   }
+   
+   .userinfo-nickname {
+     color: #aaa;
+   }
+   
+   .usermotto {
+     margin-top: 0px;
+   }
+   
+   
+   .box {
+     overflow: hidden;
+   }
 </style>

@@ -107,6 +107,8 @@
 				cid:"",
 				sentence:"",
 				voice_text:"",
+				sentence_list:[],
+				voice_list:[],
 				threshold:"",
                 title: 'start/stopRecord、play/stopVoice',
                 recording: false, //录音中
@@ -167,6 +169,26 @@
             });
         },
         methods: {
+			highLight(content, indexs) {
+				var res = [];
+				for(var i=0;i<content.length;i++)
+				{
+					if(indexs[i]==1)
+					{
+						res.push({
+							type: 1,
+							text: content[i],
+						});
+					}else 
+					{
+						res.push({
+							type: 0,
+							text: content[i],
+						});
+					}
+				}
+			  return res;
+			},
 			//dialog弹窗底部按钮回调
 			dialogCallback(e){
 				var _this = this;
@@ -188,9 +210,13 @@
 				_this.auiDialog.title = title;
 				_this.auiDialog.msg = msg;
 				_this.auiDialog.btns = [{name: '确定', color: '#197DE0'}];
-				_this.auiDialog.items = [{label: '原始文本：', type: 'text', value: this.sentence},
-				{label: '录音文本：', type: 'text', value: this.voice_text}
+				// _this.auiDialog.items = [{label: '原始文本：', type: 'text', value: this.sentence},
+				// {label: '录音文本：', type: 'text', value: this.voice_text}
+				// ];
+				_this.auiDialog.items = [{label: '原始文本：', type: 'text', value: this.sentence_list},
+				{label: '录音文本：', type: 'text', value: this.voice_list}
 				];
+				console.log(_this.auiDialog.items);
 				_this.auiDialog.theme = theme;
 				_this.$refs.dialog.show();
 			},
@@ -249,9 +275,12 @@
 					success: res => {
 						//console.log(res);
 						var js = JSON.parse(res.data);
-						console.log(js["StatusCode"]);
 						var rate = js["data"]["rate"];
 						this.voice_text = js["data"]["voice_text"];
+						this.sentence_list = this.highLight(this.sentence,js.data.a);
+						this.voice_list = this.highLight(this.voice_text,js.data.b);
+						// console.log(this.sentence_list);
+						// console.log(this.voice_list);
 						if(js["StatusCode"]=="fail")
 						{
 							this.alert(1,"上传失败","准确率:"+rate*100+"%");

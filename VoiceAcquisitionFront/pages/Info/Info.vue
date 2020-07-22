@@ -25,7 +25,7 @@
 					</view>
 					<view class="center_score" @tap="toNone">
 						<image class="rank_icon" src="../../static/icon/积分.png"></image>
-						<text class="rank_text">我的积分</text>
+						<text class="rank_text">积分:{{score}}</text>
 					</view>
 				</view>
 			</view>
@@ -58,7 +58,8 @@ var _this;
 				gender: 0,
 				native: '',
 				show: '',
-				hidden: ''
+				hidden: '',
+				score:''
 			}
 		},
 		methods: {
@@ -74,6 +75,7 @@ var _this;
 			_self.native = global.user_data.native;
 			_self.show = global.user_data.show;
 			_self.hidden = global.user_data.hidden;
+			_self.score = global.user_data.score;
 			console.log(global.isLogin);
 			if(!global.isLogin){
 				console.log('未登录...');
