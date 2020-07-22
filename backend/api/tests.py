@@ -36,13 +36,15 @@ import jieba
 
 
 #####################
-from algorithm.edit_distance import test_edit_distance,extended_edit_distance
-str1 = '今天天气怎么样'
-str2 = '今天天气怎么样?'
-s1_no_pun,s1 = punctuation_replace(str1)
-s2_no_pun,s2 = punctuation_replace(str2)
-rate,a,b = extended_edit_distance(str2,str1)
-print(rate)
+# from algorithm.edit_distance import test_edit_distance,extended_edit_distance
+# str1 = '今天天气怎么样'
+# str2 = '今天天气怎么样?'
+# s1_no_pun,s1 = punctuation_replace(str1)
+# s2_no_pun,s2 = punctuation_replace(str2)
+# rate,a,b = extended_edit_distance(str2,str1)
+# print(rate)
+###############################
+# from algorithm.edit_distance import test_edit_distance,extended_edit_distance
 # str1 = 'batyu'#'zabcd'#'batyu' # 写在左边的
 # str2 = 'beauty'#'abcde'#'beauty' # 写在上边的
 # rate,a,b ,matrix, id_matrix= extended_edit_distance(str1,str2)
@@ -91,3 +93,10 @@ print(rate)
 #     wx = info['wx_number']
 #     print(wx)
 # #print(info)
+
+##############################
+from my_jwt.jwt_handler import create_token
+# wx = 'oVCRb5GmyJlyChS90erPLg-Jlz6c'
+wx1 = 'wx1'
+token = create_token(wx1,3600)
+print(token)

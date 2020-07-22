@@ -482,6 +482,8 @@ class VoiceView(APIView):
         user.save()
         if rate < min_rate:
             # 删除本地文件 --- 暂时不用删了
+            user = User.objects.filter(wx_number=wx_number).first()
+            serializer = UserSerializer(instance=user, many=False)
             return Response({
                 'StatusCode':'fail',
                 'failType':'otherFail',
@@ -491,7 +493,8 @@ class VoiceView(APIView):
                     'context_text': words_from_context,
                     'a': a,
                     'b': b,
-					'rate': rate
+					'rate': rate,
+                    'user': serializer.data
                     }
                 })
         # 匹配度达到
@@ -547,6 +550,9 @@ class VoiceView(APIView):
 
         handler = FileHandler(move_from_dir,move_to_dir)
         handler.moveFile(src_filename,dst_filename)
+
+        user = User.objects.filter(wx_number=wx_number).first()
+        serializer = UserSerializer(instance=user, many=False)
         print('成功移动文件')
         return Response({
             'StatusCode': 'success',
@@ -555,7 +561,8 @@ class VoiceView(APIView):
                 'context_text': words_from_context,
                 'a': a,
                 'b': b,
-				'rate': rate
+				'rate': rate,
+                'user': serializer.data
                 }
             })
 
