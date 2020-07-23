@@ -21,7 +21,7 @@
 				<view class="center_down">
 					<view class="center_rank" @tap="toNone">
 						<image class="rank_icon" src="../../static/icon/排名.png"></image>
-						<text class="rank_text">我的排名</text>
+						<text class="rank_text">准确度:{{accuracy}}%</text>
 					</view>
 					<view class="center_score" @tap="toNone">
 						<image class="rank_icon" src="../../static/icon/积分.png"></image>
@@ -59,7 +59,8 @@ var _this;
 				native: '',
 				show: '',
 				hidden: '',
-				score:''
+				score:'',
+				accuracy:0,
 			}
 		},
 		methods: {
@@ -76,6 +77,7 @@ var _this;
 			_self.show = global.user_data.show;
 			_self.hidden = global.user_data.hidden;
 			_self.score = global.user_data.score;
+			_self.accuracy = global.user_data.accuracy;
 			console.log(global.isLogin);
 			if(!global.isLogin){
 				console.log('未登录...');

@@ -173,7 +173,7 @@
 				var res = [];
 				for(var i=0;i<content.length;i++)
 				{
-					if(indexs[i]==1)
+					if(indexs[i]==1 || indexs[i]==2 || indexs[i]==-1)
 					{
 						res.push({
 							type: 1,
@@ -273,13 +273,20 @@
 						name:"voice_file",
 					},
 					success: res => {
-						//console.log(res);
+						//"{"StatusCode":"fail","failType":"otherFail","failReason":"匹配度未达到阈值","data":{"voice_text":"今天怎么样？","context_text":"今天天气怎么样","a":[0,1,0,1,0,0,0],"b":[0,0,0,0,0,1],"rate":0.5714285714285714,"user":{"wx_number":"oVCRb5DxhSYL45xLJDmMxErDPyYY","nickName":"小鱼儿","score":356,"native_place":"Henan","image":"https://wx.qlogo.cn/mmopen/vi_32/iaMia0X5uB8LBWBibGzaeknkjouNxN08muhDVpiaVU4cOASkZrZEkibUiaep6MMs8eX0rHBmZQK5qPiaMHXEamWlVP3jQ/132","sex":"男","task_times":44,"success_times":5}}}"
+						console.log(res);
 						var js = JSON.parse(res.data);
 						var rate = js["data"]["rate"];
+						var score = js["data"]["user"]["score"];
+						global.user_data.score = score;
+						var total_times = js["data"]["user"]["task_times"];
+						var success_times = js["data"]["user"]["success_times"];
+						global.user_data.accuracy = Math.round(success_times*100/total_times);
 						this.voice_text = js["data"]["voice_text"];
 						this.sentence_list = this.highLight(this.sentence,js.data.a);
 						this.voice_list = this.highLight(this.voice_text,js.data.b);
-						// console.log(this.sentence_list);
+						console.log(js.data.a);
+						console.log(js.data.b);
 						// console.log(this.voice_list);
 						if(js["StatusCode"]=="fail")
 						{

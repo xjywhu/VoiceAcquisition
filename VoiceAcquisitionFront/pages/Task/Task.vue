@@ -51,6 +51,24 @@
 				complete: () => {}
 			});
 		},
+		onShow:function(){
+			uni.showLoading({
+				title:"加载中...."
+			})
+			uni.request({
+				url: base_url + 'context_info/'+global.user_data.jwt,
+				method: 'GET',
+				data: {},
+				success: res => {
+					console.log(res.data.data); 
+					//console.log(res.data[0].description);
+					this.tasks = res.data.data;
+					uni.hideLoading();
+				}, 
+				fail: () => {console.log("fail.........");},
+				complete: () => {}
+			});
+		},
 		methods: { 
 			toSpeech(e){
 				var cid = e.currentTarget.dataset.cid;

@@ -6,6 +6,7 @@
 		avatarUrl: 'http://img2.imgtn.bdimg.com/it/u=2091711702,2468700162&fm=11&gp=0.jpg',//默认头像路径
 		sex: '未知',
 		age: '',
+		accuracy:0,
 		score:0,
 		gender: 0,
 		native: '',
@@ -50,6 +51,7 @@
 					global.user_data.score = data.score
 					global.user_data.wx_number = data.wx_number
 					global.user_data.sex = data.sex
+					global.user_data.accuracy = Math.round(data.success_times*100/data.task_times)
 					global.isLogin = true
 					// 刷新jwt，需要这个功能吗？
 					//global.user_data.jwt = data.newJWT 

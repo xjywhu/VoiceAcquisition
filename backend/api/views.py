@@ -245,9 +245,9 @@ class ContextView(APIView):
         DEFAULT_NUM = 10 # 默认推荐数目
 
         if Context.objects.count() < DEFAULT_NUM:
-            return Context.objects.all()
+            return Context.objects.all().filter(finished_times=0)
         # 通过遍历计算,得到每个句子中没被覆盖的token个数
-        queryset = Context.objects.all()
+        queryset = Context.objects.all().filter(finished_times=0)
         no_cover_nums = []
         for context in queryset:
             tks = context.token.split('|')
@@ -260,8 +260,8 @@ class ContextView(APIView):
         sorted_data_tuples = sorted(enumerate(no_cover_nums), key=lambda x:-x[1])
         aim_datas = sorted_data_tuples[:DEFAULT_NUM]
         indexs = [data[0] for data in aim_datas]
-        ids = [queryset[idx].token for idx in indexs]
-        new_queryset = Context.objects.filter(pk__in=ids)
+        ids = [queryset[idx].cid for idx in indexs]
+        new_queryset = queryset.filter(pk__in=ids)
         return new_queryset
 
     def get_recommended_contexts(self): ################################待修改
@@ -591,7 +591,7 @@ class ReleaseContextViewSet(ModelViewSet):
                 context_token = ''
                 for tk in tokens:
                     context_token+=tk+'|'
-                    obj = Token.objects.filter(token='aaa')
+                    obj = Token.objects.filter(token=tk)
                     if len(obj) == 0:
                         # 数据库中没有此token，加入
                         new_token = Token(token=tk)
