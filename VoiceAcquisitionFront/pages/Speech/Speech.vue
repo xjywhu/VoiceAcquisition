@@ -4,7 +4,7 @@
 			title="阅读卡片" 
 			mode="basic" 
 			:is-shadow="true" 
-			note="金额:100"
+			:note="'积分:'+score"
 			:threshold="'阈值:'+threshold"
 		>
 		
@@ -105,6 +105,8 @@
         data() {
             return {
 				cid:"",
+				isSuccess: false,
+				score:"",
 				sentence:"",
 				voice_text:"",
 				sentence_list:[],
@@ -137,6 +139,7 @@
 			this.cid = e.cid;
 			this.sentence = e.sentence; 
 			this.threshold = e.threshold;
+			this.score = e.score;
 			console.log(e);
             music = uni.createInnerAudioContext();
             music.onEnded(() => {
@@ -192,6 +195,18 @@
 			//dialog弹窗底部按钮回调
 			dialogCallback(e){
 				var _this = this;
+				if(this.isSuccess)
+				{
+					console.log("上传成功");
+					uni.navigateBack();
+					// let pages = getCurrentPages();
+					// let page = pages[pages.length - 1];
+					// page.onLoad()
+					//    page.$vm,custemOnReady()
+				}else
+				{
+					console.log("上传失败");
+				}
 				//console.log(e);             
 				if(_this.$refs.dialog.getVal().length > 0)
 				{ //prompt输入框——点击确定时弹出输入内容
@@ -262,6 +277,10 @@
                 this.formatedRecordTime = "00:00:00", this.formatedRecordTime = "00:00:00";
             },
 			upload() {
+				uni.showLoading({
+					title:"语音识别中....",
+					mask:true
+				})
 				wx.uploadFile({
 					url: global.base_url+"voices_info/"+this.cid+"/"+global.user_data.jwt,
 					filePath: this.tempFilePath, 
@@ -290,10 +309,14 @@
 						// console.log(this.voice_list);
 						if(js["StatusCode"]=="fail")
 						{
+							this.isSuccess = false;
 							this.alert(1,"上传失败","准确率:"+rate*100+"%");
 						}else{
+							this.isSuccess = true;
 							this.alert(1,"上传成功","准确率:"+rate*100+"%");
+							//uni.navigateBack();
 						}
+						uni.hideLoading();
 					},
 					fail: res=>{
 						console.log(res)

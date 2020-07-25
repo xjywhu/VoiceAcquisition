@@ -277,7 +277,7 @@
 		color: $uni-text-color-grey;
 		font-size: $uni-font-size-base;
 		padding: 5px;
-		width: 60px;
+		width: 80px;
 	}
 
 	.uni-card--shadow {

@@ -14,7 +14,8 @@
 		hidden: '',
 		jwt:null,
 	}
-	global.base_url = 'http://127.0.0.1:8000/api/v1/'
+	//global.base_url = 'http://127.0.0.1:8000/api/v1/'
+	global.base_url = 'http://175.24.105.148:8000/api/v1/'
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')

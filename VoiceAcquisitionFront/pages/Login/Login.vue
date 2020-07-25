@@ -32,7 +32,7 @@
 				uni.login({
 					provider:'weixin',
 					success:function(res2){
-						var url = 'http://127.0.0.1:8000/api/v1/openid/'+res2.code;
+						var url = global.base_url+'openid/'+res2.code;
 						//console.log(res2.code);
 						console.log(res2);
 						if(res2.errMsg == "login:ok"){
@@ -74,7 +74,6 @@
 									console.log('登录成功，即将跳转界面...')
 									global.user_data.avatarUrl = res.detail.userInfo.avatarUrl;
 									// 存入数据库
-									var base_url = "http://127.0.0.1:8000/api/v1/";
 									if(global.user_data.wx_number!= null){
 										var data = {
 											wx_number:global.user_data.wx_number,
@@ -85,7 +84,7 @@
 											image:global.user_data.avatarUrl
 										}
 										uni.request({
-											url:base_url+'user_info/'+jwt,
+											url:global.base_url+'user_info/'+jwt,
 											data:data,
 											method:'PUT',
 											success: res => {
