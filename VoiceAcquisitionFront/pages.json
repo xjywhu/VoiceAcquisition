@@ -1,19 +1,19 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
+		    "path" : "pages/Info/Info",
+		    "style" : {
+				"navigationBarTitleText": "个人中心"
+			}
+		}
+		,{
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "任务列表",
 				"enablePullDownRefresh": true,  //设置为true表示当前页面开启下拉刷新
 				"backgroundTextStyle": "dark"  //下拉 loading 的样式，仅支持 dark/light
 			}
-		}
-	    ,{
-            "path" : "pages/Info/Info",
-            "style" : {
-				"navigationBarTitleText": "个人中心"
-			}
-        }
+		} 
         ,{
             "path" : "pages/Task/Task",
             "style" : {

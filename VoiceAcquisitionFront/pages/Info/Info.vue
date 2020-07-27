@@ -64,8 +64,39 @@ var _this;
 			}
 		},
 		methods: {
+			getAllClass: () => {
+			    return new Promise((resolve, reject) => {
+			        uni.request({
+						url:global.base_url+"auto_login/"+global.user_data.jwt,
+			            success: (res) => {
+			                //store.commit('setAllClass', res.data);
+							var statusCode = res.data.StatusCode
+							var data = res.data.data
+							global.user_data.avatarUrl = data.image
+							global.user_data.native = data.native_place
+							global.user_data.nickNames = data.nickName
+							global.user_data.score = data.score
+							global.user_data.wx_number = data.wx_number
+							global.user_data.sex = data.sex
+							global.user_data.accuracy = Math.round(data.success_times*100/data.task_times)
+							global.isLogin = true
+							console.log(global.isLogin);
+							// 刷新jwt，需要这个功能吗？
+							//global.user_data.jwt = data.newJWT 
+							//console.log(data.newJWT)
+							uni.setStorage({
+								key:'JWT',
+								data:global.user_data.jwt
+							})
+			            },
+			            fail: (err) => {
+			            }
+			        });
+			    })
+			}
 		},
 		onShow:function(){
+			// console.log("OnShow -------------------------------");
 			let _self = this;
 			_self.wx_number = global.user_data.wx_number;
 			_self.nickNames = global.user_data.nickNames;
@@ -74,28 +105,96 @@ var _this;
 			_self.age = global.user_data.age;
 			_self.gender = global.user_data.gender;
 			_self.native = global.user_data.native;
-			_self.show = global.user_data.show;
+			_self.show = global.user_data.show; 
 			_self.hidden = global.user_data.hidden;
 			_self.score = global.user_data.score;
 			_self.accuracy = global.user_data.accuracy;
 			console.log(global.isLogin);
-			if(!global.isLogin){
-				console.log('未登录...');
-				//showUniPop();
-				uni.showModal({
-					title:'提醒',
-					content:'请登录',
-					success:function(res){
-						if(res.confirm){
-							uni.navigateTo({
-								url:'../Login/Login'
-							});
-						}
-					},
-				});
-			}
+			// uni.showLoading({
+			// 	title:"加载中....",
+			// 	mask: true,
+			// })
 		},
-		onLoad: function(option) {
+		onLoad:function(option) {
+			uni.showLoading({
+				title:"加载中....",
+				mask: true,
+			})
+			return new Promise(resolve=>{
+				setTimeout(()=>{
+					let _self = this;
+					_self.wx_number = global.user_data.wx_number;
+					_self.nickNames = global.user_data.nickNames;
+					_self.avatarUrl = global.user_data.avatarUrl;
+					_self.sex = global.user_data.sex;
+					_self.age = global.user_data.age;
+					_self.gender = global.user_data.gender;
+					_self.native = global.user_data.native;
+					_self.show = global.user_data.show; 
+					_self.hidden = global.user_data.hidden;
+					_self.score = global.user_data.score;
+					_self.accuracy = global.user_data.accuracy;
+					console.log(global.isLogin);
+					if(!global.isLogin){
+						console.log('未登录...');
+						//showUniPop();
+						uni.showModal({
+							title:'提醒',
+							content:'请登录',
+							success:function(res){
+								if(res.confirm){
+									uni.navigateTo({
+										url:'../Login/Login'
+									});
+								}
+							},
+						});
+					}
+					uni.hideLoading();
+					resolve();
+				},2000)
+			})
+			
+			
+			// console.log("OnLoad");
+			// try {
+			//     const value = uni.getStorageSync('JWT');
+			//     if (value) {
+			//         console.log(value);
+			// 		global.user_data.jwt = value;
+			// 		//global.isLogin = true;
+			//     }
+			// } catch (e) {
+			//     // error
+			// }
+			// // 尝试直接登录
+			// if(global.user_data.jwt == null) {return;}
+			// //await this.getAllClass();
+			// uni.request({
+			// 	url:global.base_url+"auto_login/"+global.user_data.jwt,
+			// 	method:'GET',
+			// 	success: res => { 
+			// 		var statusCode = res.data.StatusCode
+			// 		var data = res.data.data
+			// 		global.user_data.avatarUrl = data.image
+			// 		global.user_data.native = data.native_place
+			// 		global.user_data.nickNames = data.nickName
+			// 		global.user_data.score = data.score
+			// 		global.user_data.wx_number = data.wx_number
+			// 		global.user_data.sex = data.sex
+			// 		global.user_data.accuracy = Math.round(data.success_times*100/data.task_times)
+			// 		global.isLogin = true
+			// 		console.log(global.isLogin);
+			// 		// 刷新jwt，需要这个功能吗？
+			// 		//global.user_data.jwt = data.newJWT 
+			// 		//console.log(data.newJWT)
+			// 		uni.setStorage({
+			// 			key:'JWT',
+			// 			data:global.user_data.jwt
+			// 		})
+			// 	},
+			// })
+			
 			
 		}
 	}

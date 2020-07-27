@@ -13,27 +13,18 @@
 		show: '',
 		hidden: '',
 		jwt:null,
-	}
+	} 
 	//global.base_url = 'http://127.0.0.1:8000/api/v1/'
 	global.base_url = 'http://175.24.105.148:8000/api/v1/'
 	export default {
 		onLaunch: function() {
 			console.log('App Launch')
-			// if ($api.getStorage('JWT'))  { // 如果有值
-			// 	uni.getStorage({
-			// 		key:'JWT',
-			// 		success: (res) => {
-			// 			global.user_data.jwt = res.data
-			// 			console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-			// 			//console.log(global.user_data.jwt)
-			// 		}
-			// 	})
-			// }
 			try {
 			    const value = uni.getStorageSync('JWT');
 			    if (value) {
 			        console.log(value);
 					global.user_data.jwt = value;
+					//global.isLogin = true;
 			    }
 			} catch (e) {
 			    // error
@@ -43,7 +34,7 @@
 			uni.request({
 				url:global.base_url+"auto_login/"+global.user_data.jwt,
 				method:'GET',
-				success: res => {
+				success: res => { 
 					var statusCode = res.data.StatusCode
 					var data = res.data.data
 					global.user_data.avatarUrl = data.image

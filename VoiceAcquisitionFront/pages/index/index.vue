@@ -20,7 +20,6 @@
 			onLoad:function(){
 				uni.showLoading({
 					title:"加载中....",
-					mask:true
 				})
 				uni.request({
 					//url: global.base_url+'task_finish/'+global.user_data.wx_number+'/',
