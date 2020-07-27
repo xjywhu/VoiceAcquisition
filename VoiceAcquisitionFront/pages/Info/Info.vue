@@ -20,11 +20,11 @@
 				</view>
 				<view class="center_down">
 					<view class="center_rank" @tap="toNone">
-						<image class="rank_icon" src="../../static/icon/排名.png"></image>
+						<image class="rank_icon" src="https://yanxuan.nosdn.127.net/80067dc2f4def51fcb44b2eae3a8686a.png"></image>
 						<text class="rank_text">准确度:{{accuracy}}%</text>
 					</view>
 					<view class="center_score" @tap="toNone">
-						<image class="rank_icon" src="../../static/icon/积分.png"></image>
+						<image class="rank_icon" src="https://yanxuan.nosdn.127.net/de61ec5bcbefa5cdbcf80ca15aa2795f.png"></image>
 						<text class="rank_text">积分:{{score}}</text>
 					</view>
 				</view>
@@ -32,9 +32,9 @@
 			<image src='https://6661-fatdown-wxapp-sg2p1-1300398887.tcb.qcloud.la/wave.gif?sign=045605c672f482a8c3d428abed669aa7&t=1570674356' mode='scaleToFill' class='gif-wave'></image>
 		</view>
 		<uni-list>
-		    <uni-list-item title="我的任务" thumb="../../static/icon/我的任务.png"></uni-list-item>
-		    <uni-list-item title="充值积分" thumb="../../static/icon/充值.png"></uni-list-item>
-		    <uni-list-item title="积分提现" thumb="../../static/icon/提现.png"></uni-list-item>
+		    <uni-list-item title="我的任务" thumb="https://yanxuan.nosdn.127.net/66c2e41b7f9d8870ee7b4c038b0628c0.png"></uni-list-item>
+		    <uni-list-item title="充值积分" thumb="https://yanxuan.nosdn.127.net/f6b8c89b68963aece97d512e1da3c4a3.png"></uni-list-item>
+		    <uni-list-item title="积分提现" thumb="https://yanxuan.nosdn.127.net/c80ed565f9fc1bbbea861fb9b495dab9.png"></uni-list-item>
 		</uni-list>
 	</view>
 	

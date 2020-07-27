@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<image class="bg-set" src="../../static/image/LoginBG.png"></image>
+		<image class="bg-set" src="https://yanxuan.nosdn.127.net/6b2b28090942b8bdf4c16d63e9226c32.png"></image>
 		<view class='takePlaceView'></view>
 		<!-- #ifdef MP-WEIXIN -->
 		<button type="primary" class='loginBtn' open-type="getUserInfo" @getuserinfo="getuserinfo" withCredentials="true">微信登录</button>
@@ -53,6 +53,8 @@
 									}
 									var openid = res3.data.data.openid
 									var jwt = res3.data.data.jwt
+									
+									
 									global.user_data.jwt = jwt
 									global.user_data.wx_number = openid
 									//console.log(global.user_data.wx_number)
@@ -68,6 +70,9 @@
 										global.user_data.sex = '未知';
 									}
 									global.user_data.native = res.detail.userInfo.province.toString();
+									
+									console.log(res)
+									
 									global.user_data.wx_number = openid;
 									// uni.setStorageSync('wx_number',openid);
 									global.isLogin = true;
@@ -81,7 +86,7 @@
 											native_place:global.user_data.native,
 											sex:global.user_data.sex,
 											age:global.user_data.age,
-											image:global.user_data.avatarUrl
+											image:global.user_data.avatarUrl,
 										}
 										uni.request({
 											url:global.base_url+'user_info/'+jwt,
@@ -89,6 +94,10 @@
 											method:'PUT',
 											success: res => {
 												console.log(res.data);
+												console.log(res.data.data.score)
+												if(res.data.data.success_times==0) global.user_data.accuracy=0;
+												else global.user_data.accuracy = Math.round(res.data.data.success_times*100/res.data.data.task_times);
+												global.user_data.score = res.data.data.score
 											},
 											fail: () => {},
 											complete: () => {}
@@ -98,7 +107,9 @@
 										key:'JWT',
 										data:jwt
 									})
+									setTimeout(()=>{
 									uni.navigateBack();
+									},2000)
 								}
 							});
 						}else{

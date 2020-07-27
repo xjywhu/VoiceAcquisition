@@ -22,8 +22,6 @@
 					title:"加载中....",
 				})
 				uni.request({
-					//url: global.base_url+'task_finish/'+global.user_data.wx_number+'/',
-					//global.base_url+'task_finish/oVCRb5GmyJlyChS90erPLg-Jlz6c/',
 					url: global.base_url+'task_finish/'+global.user_data.jwt,
 					method: 'GET',
 					data: {},
