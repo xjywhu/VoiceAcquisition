@@ -16,7 +16,7 @@
 						<text class="nickName">昵称:{{nickNames}}</text>
 						<text class="sex">性别:{{sex}}</text>
 						<text class="native">籍贯:{{native}}</text>
-					</view>
+					</view> 
 				</view>
 				<view class="center_down">
 					<view class="center_rank" @tap="toNone">
@@ -59,14 +59,14 @@ var _this;
 				native: '',
 				show: '',
 				hidden: '',
-				score:'',
+				score:0,
 				accuracy:0,
 			}
 		},
 		methods: {
 			getAllClass: () => {
 			    return new Promise((resolve, reject) => {
-			        uni.request({
+			        uni.request({ 
 						url:global.base_url+"auto_login/"+global.user_data.jwt,
 			            success: (res) => {
 			                //store.commit('setAllClass', res.data);
@@ -78,7 +78,8 @@ var _this;
 							global.user_data.score = data.score
 							global.user_data.wx_number = data.wx_number
 							global.user_data.sex = data.sex
-							global.user_data.accuracy = Math.round(data.success_times*100/data.task_times)
+							if(data.success_times==0) global.user_data.accuracy=0;
+							else global.user_data.accuracy = Math.round(data.success_times*100/data.task_times)
 							global.isLogin = true
 							console.log(global.isLogin);
 							// 刷新jwt，需要这个功能吗？
